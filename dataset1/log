@@ -1,0 +1,1164 @@
+
+Your NormalizedData Path is ./tmp/NormalizedData
+
+node {
+  name: "Adam/iterations/Initializer/initial_value"
+  op: "Const"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT64
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_INT64
+        tensor_shape {
+        }
+        int64_val: 0
+      }
+    }
+  }
+}
+node {
+  name: "Adam/iterations"
+  op: "VarHandleOp"
+  attr {
+    key: "container"
+    value {
+      s: ""
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT64
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+      }
+    }
+  }
+  attr {
+    key: "shared_name"
+    value {
+      s: "Adam/iterations"
+    }
+  }
+}
+node {
+  name: "Adam/iterations/IsInitialized/VarIsInitializedOp"
+  op: "VarIsInitializedOp"
+  input: "Adam/iterations"
+}
+node {
+  name: "Adam/iterations/Assign"
+  op: "AssignVariableOp"
+  input: "Adam/iterations"
+  input: "Adam/iterations/Initializer/initial_value"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@Adam/iterations"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT64
+    }
+  }
+}
+node {
+  name: "Adam/iterations/Read/ReadVariableOp"
+  op: "ReadVariableOp"
+  input: "Adam/iterations"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@Adam/iterations"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT64
+    }
+  }
+}
+node {
+  name: "Adam/lr/Initializer/initial_value"
+  op: "Const"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_FLOAT
+        tensor_shape {
+        }
+        float_val: 10.0
+      }
+    }
+  }
+}
+node {
+  name: "Adam/lr"
+  op: "VarHandleOp"
+  attr {
+    key: "container"
+    value {
+      s: ""
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+      }
+    }
+  }
+  attr {
+    key: "shared_name"
+    value {
+      s: "Adam/lr"
+    }
+  }
+}
+node {
+  name: "Adam/lr/IsInitialized/VarIsInitializedOp"
+  op: "VarIsInitializedOp"
+  input: "Adam/lr"
+}
+node {
+  name: "Adam/lr/Assign"
+  op: "AssignVariableOp"
+  input: "Adam/lr"
+  input: "Adam/lr/Initializer/initial_value"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@Adam/lr"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "Adam/lr/Read/ReadVariableOp"
+  op: "ReadVariableOp"
+  input: "Adam/lr"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@Adam/lr"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "Adam/beta_1/Initializer/initial_value"
+  op: "Const"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_FLOAT
+        tensor_shape {
+        }
+        float_val: 0.8999999761581421
+      }
+    }
+  }
+}
+node {
+  name: "Adam/beta_1"
+  op: "VarHandleOp"
+  attr {
+    key: "container"
+    value {
+      s: ""
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+      }
+    }
+  }
+  attr {
+    key: "shared_name"
+    value {
+      s: "Adam/beta_1"
+    }
+  }
+}
+node {
+  name: "Adam/beta_1/IsInitialized/VarIsInitializedOp"
+  op: "VarIsInitializedOp"
+  input: "Adam/beta_1"
+}
+node {
+  name: "Adam/beta_1/Assign"
+  op: "AssignVariableOp"
+  input: "Adam/beta_1"
+  input: "Adam/beta_1/Initializer/initial_value"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@Adam/beta_1"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "Adam/beta_1/Read/ReadVariableOp"
+  op: "ReadVariableOp"
+  input: "Adam/beta_1"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@Adam/beta_1"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "Adam/beta_2/Initializer/initial_value"
+  op: "Const"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_FLOAT
+        tensor_shape {
+        }
+        float_val: 0.9990000128746033
+      }
+    }
+  }
+}
+node {
+  name: "Adam/beta_2"
+  op: "VarHandleOp"
+  attr {
+    key: "container"
+    value {
+      s: ""
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+      }
+    }
+  }
+  attr {
+    key: "shared_name"
+    value {
+      s: "Adam/beta_2"
+    }
+  }
+}
+node {
+  name: "Adam/beta_2/IsInitialized/VarIsInitializedOp"
+  op: "VarIsInitializedOp"
+  input: "Adam/beta_2"
+}
+node {
+  name: "Adam/beta_2/Assign"
+  op: "AssignVariableOp"
+  input: "Adam/beta_2"
+  input: "Adam/beta_2/Initializer/initial_value"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@Adam/beta_2"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "Adam/beta_2/Read/ReadVariableOp"
+  op: "ReadVariableOp"
+  input: "Adam/beta_2"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@Adam/beta_2"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "Adam/decay/Initializer/initial_value"
+  op: "Const"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_FLOAT
+        tensor_shape {
+        }
+        float_val: 0.5
+      }
+    }
+  }
+}
+node {
+  name: "Adam/decay"
+  op: "VarHandleOp"
+  attr {
+    key: "container"
+    value {
+      s: ""
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+      }
+    }
+  }
+  attr {
+    key: "shared_name"
+    value {
+      s: "Adam/decay"
+    }
+  }
+}
+node {
+  name: "Adam/decay/IsInitialized/VarIsInitializedOp"
+  op: "VarIsInitializedOp"
+  input: "Adam/decay"
+}
+node {
+  name: "Adam/decay/Assign"
+  op: "AssignVariableOp"
+  input: "Adam/decay"
+  input: "Adam/decay/Initializer/initial_value"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@Adam/decay"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "Adam/decay/Read/ReadVariableOp"
+  op: "ReadVariableOp"
+  input: "Adam/decay"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@Adam/decay"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "input_1"
+  op: "Placeholder"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+        dim {
+          size: -1
+        }
+        dim {
+          size: 3
+        }
+      }
+    }
+  }
+}
+node {
+  name: "dense_1/kernel/Initializer/random_normal/shape"
+  op: "Const"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_1/kernel"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT32
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_INT32
+        tensor_shape {
+          dim {
+            size: 2
+          }
+        }
+        tensor_content: "\003\000\000\0002\000\000\000"
+      }
+    }
+  }
+}
+node {
+  name: "dense_1/kernel/Initializer/random_normal/mean"
+  op: "Const"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_1/kernel"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_FLOAT
+        tensor_shape {
+        }
+        float_val: 0.0
+      }
+    }
+  }
+}
+node {
+  name: "dense_1/kernel/Initializer/random_normal/stddev"
+  op: "Const"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_1/kernel"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_FLOAT
+        tensor_shape {
+        }
+        float_val: 1.0
+      }
+    }
+  }
+}
+node {
+  name: "dense_1/kernel/Initializer/random_normal/RandomStandardNormal"
+  op: "RandomStandardNormal"
+  input: "dense_1/kernel/Initializer/random_normal/shape"
+  attr {
+    key: "T"
+    value {
+      type: DT_INT32
+    }
+  }
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_1/kernel"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "seed"
+    value {
+      i: 0
+    }
+  }
+  attr {
+    key: "seed2"
+    value {
+      i: 0
+    }
+  }
+}
+node {
+  name: "dense_1/kernel/Initializer/random_normal/mul"
+  op: "Mul"
+  input: "dense_1/kernel/Initializer/random_normal/RandomStandardNormal"
+  input: "dense_1/kernel/Initializer/random_normal/stddev"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_1/kernel"
+      }
+    }
+  }
+}
+node {
+  name: "dense_1/kernel/Initializer/random_normal"
+  op: "Add"
+  input: "dense_1/kernel/Initializer/random_normal/mul"
+  input: "dense_1/kernel/Initializer/random_normal/mean"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_1/kernel"
+      }
+    }
+  }
+}
+node {
+  name: "dense_1/kernel"
+  op: "VarHandleOp"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_1/kernel"
+      }
+    }
+  }
+  attr {
+    key: "container"
+    value {
+      s: ""
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+        dim {
+          size: 3
+        }
+        dim {
+          size: 50
+        }
+      }
+    }
+  }
+  attr {
+    key: "shared_name"
+    value {
+      s: "dense_1/kernel"
+    }
+  }
+}
+node {
+  name: "dense_1/kernel/IsInitialized/VarIsInitializedOp"
+  op: "VarIsInitializedOp"
+  input: "dense_1/kernel"
+}
+node {
+  name: "dense_1/kernel/Assign"
+  op: "AssignVariableOp"
+  input: "dense_1/kernel"
+  input: "dense_1/kernel/Initializer/random_normal"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_1/kernel"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "dense_1/kernel/Read/ReadVariableOp"
+  op: "ReadVariableOp"
+  input: "dense_1/kernel"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_1/kernel"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "dense_1/bias/Initializer/Const"
+  op: "Const"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_1/bias"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_FLOAT
+        tensor_shape {
+          dim {
+            size: 50
+          }
+        }
+        float_val: 0.0
+      }
+    }
+  }
+}
+node {
+  name: "dense_1/bias"
+  op: "VarHandleOp"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_1/bias"
+      }
+    }
+  }
+  attr {
+    key: "container"
+    value {
+      s: ""
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+        dim {
+          size: 50
+        }
+      }
+    }
+  }
+  attr {
+    key: "shared_name"
+    value {
+      s: "dense_1/bias"
+    }
+  }
+}
+node {
+  name: "dense_1/bias/IsInitialized/VarIsInitializedOp"
+  op: "VarIsInitializedOp"
+  input: "dense_1/bias"
+}
+node {
+  name: "dense_1/bias/Assign"
+  op: "AssignVariableOp"
+  input: "dense_1/bias"
+  input: "dense_1/bias/Initializer/Const"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_1/bias"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "dense_1/bias/Read/ReadVariableOp"
+  op: "ReadVariableOp"
+  input: "dense_1/bias"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_1/bias"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "dense_1/MatMul/ReadVariableOp"
+  op: "ReadVariableOp"
+  input: "dense_1/kernel"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "dense_1/MatMul"
+  op: "MatMul"
+  input: "input_1"
+  input: "dense_1/MatMul/ReadVariableOp"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "transpose_a"
+    value {
+      b: false
+    }
+  }
+  attr {
+    key: "transpose_b"
+    value {
+      b: false
+    }
+  }
+}
+node {
+  name: "dense_1/BiasAdd/ReadVariableOp"
+  op: "ReadVariableOp"
+  input: "dense_1/bias"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "dense_1/BiasAdd"
+  op: "BiasAdd"
+  input: "dense_1/MatMul"
+  input: "dense_1/BiasAdd/ReadVariableOp"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "data_format"
+    value {
+      s: "NHWC"
+    }
+  }
+}
+node {
+  name: "dense_1/Tanh"
+  op: "Tanh"
+  input: "dense_1/BiasAdd"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "dense_2/kernel/Initializer/Const"
+  op: "Const"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_2/kernel"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_FLOAT
+        tensor_shape {
+          dim {
+            size: 50
+          }
+          dim {
+            size: 1
+          }
+        }
+        float_val: 0.0
+      }
+    }
+  }
+}
+node {
+  name: "dense_2/kernel"
+  op: "VarHandleOp"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_2/kernel"
+      }
+    }
+  }
+  attr {
+    key: "container"
+    value {
+      s: ""
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+        dim {
+          size: 50
+        }
+        dim {
+          size: 1
+        }
+      }
+    }
+  }
+  attr {
+    key: "shared_name"
+    value {
+      s: "dense_2/kernel"
+    }
+  }
+}
+node {
+  name: "dense_2/kernel/IsInitialized/VarIsInitializedOp"
+  op: "VarIsInitializedOp"
+  input: "dense_2/kernel"
+}
+node {
+  name: "dense_2/kernel/Assign"
+  op: "AssignVariableOp"
+  input: "dense_2/kernel"
+  input: "dense_2/kernel/Initializer/Const"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_2/kernel"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "dense_2/kernel/Read/ReadVariableOp"
+  op: "ReadVariableOp"
+  input: "dense_2/kernel"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@dense_2/kernel"
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "dense_2/MatMul/ReadVariableOp"
+  op: "ReadVariableOp"
+  input: "dense_2/kernel"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "dense_2/MatMul"
+  op: "MatMul"
+  input: "dense_1/Tanh"
+  input: "dense_2/MatMul/ReadVariableOp"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
+    key: "transpose_a"
+    value {
+      b: false
+    }
+  }
+  attr {
+    key: "transpose_b"
+    value {
+      b: false
+    }
+  }
+}
+node {
+  name: "dense_2/Sigmoid"
+  op: "Sigmoid"
+  input: "dense_2/MatMul"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+node {
+  name: "VarIsInitializedOp"
+  op: "VarIsInitializedOp"
+  input: "Adam/iterations"
+}
+node {
+  name: "VarIsInitializedOp_1"
+  op: "VarIsInitializedOp"
+  input: "Adam/lr"
+}
+node {
+  name: "VarIsInitializedOp_2"
+  op: "VarIsInitializedOp"
+  input: "Adam/beta_1"
+}
+node {
+  name: "VarIsInitializedOp_3"
+  op: "VarIsInitializedOp"
+  input: "Adam/beta_2"
+}
+node {
+  name: "VarIsInitializedOp_4"
+  op: "VarIsInitializedOp"
+  input: "Adam/decay"
+}
+node {
+  name: "VarIsInitializedOp_5"
+  op: "VarIsInitializedOp"
+  input: "dense_1/kernel"
+}
+node {
+  name: "VarIsInitializedOp_6"
+  op: "VarIsInitializedOp"
+  input: "dense_1/bias"
+}
+node {
+  name: "VarIsInitializedOp_7"
+  op: "VarIsInitializedOp"
+  input: "dense_2/kernel"
+}
+node {
+  name: "init"
+  op: "NoOp"
+  input: "^Adam/beta_1/Assign"
+  input: "^Adam/beta_2/Assign"
+  input: "^Adam/decay/Assign"
+  input: "^Adam/iterations/Assign"
+  input: "^Adam/lr/Assign"
+  input: "^dense_1/bias/Assign"
+  input: "^dense_1/kernel/Assign"
+  input: "^dense_2/kernel/Assign"
+}
+versions {
+  producer: 26
+}

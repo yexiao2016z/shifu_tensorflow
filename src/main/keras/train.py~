@@ -1,0 +1,19 @@
+import tensorflow as tf
+import sys
+import json
+import numpy as np
+
+model_file_path = sys.argv[1]
+loss = sys.argv[2]
+optimizer = sys.argv[3]
+data_path = sys.argv[4]
+
+data = pd.read_csv(data_path,delimiter='|',header=None)
+model = tf.keras.models.model_from_json(json.dumps(json.load(open(model_file_path))))
+model.compile(optimizer=optimizer,loss=loss)
+#print(np.array([[1,2]]).shape)
+#print(data.iloc[:,0].shape)
+#print(np.array(data.values[:,1:]).shape)
+model.fit(x=data.iloc[:,1:],y=data.values[:,0])
+model.save('/tmp/model_save.h5')
+

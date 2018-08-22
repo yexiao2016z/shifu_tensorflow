@@ -1,0 +1,351 @@
+/**
+ * Copyright [2012-2014] PayPal Software Foundation
+ *  
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+Shifu Change Log
+
+Changes for Shifu-0.11.1
+    * TreeModel Load Failed for Category > 10K
+       https://github.com/ShifuML/shifu/issues/482
+
+Changes for Shifu-0.11.0
+    * Python Module Support
+       https://github.com/ShifuML/pyshifu
+    * Shifu Eval Spark Module Support
+       https://github.com/ShifuML/shifu-spark
+    * New GBDT Model Score Converter
+       https://github.com/ShifuML/shifu/issues/473
+    * VarSel Sensitivity Analysis Job Performance Improvement
+       https://github.com/ShifuML/shifu/issues/466
+    * Segment Expansion Support
+       https://github.com/ShifuML/shifu/issues/438
+    * PMML One Unifed NN Model
+       https://github.com/ShifuML/shifu/issues/381
+    * NN Binary Model and Model Engine and Bagging Model Support
+       https://github.com/ShifuML/shifu/issues/402
+    * Hybrid Feature Support
+       https://github.com/ShifuML/shifu/issues/405
+    * New Loss Function Support
+       https://github.com/ShifuML/shifu/issues/442
+    * Others
+       https://github.com/ShifuML/shifu/issues?q=is%3Aissue+is%3Aclosed
+
+Changes for Shifu-0.10.5
+    * Optimize IndependetTreeModel by decreaseing model memory to 70% and CPU time to 90%
+    * Upgrade guagua to 0.7.0 t fix a bug on empty gzip files in one worker
+
+Changes for Shifu-0.10.4
+    * Optimize IndependetTreeModel by split regression and classification;
+    * Add new version of fast correlation computing.
+
+Changes for Shifu-0.10.3
+    * Fix GBT SLA Categorical Feature Rebin Delimiter Issue: change delimiter to '@^'
+
+Changes for Shifu-0.10.2
+    * Fix GBT SLA issue: pre-parse double types for only once.
+
+Changes for Shifu-0.10.1
+    * Fix one big bug on 'baggingWithReplacement':
+        https://github.com/ShifuML/shifu/issues/335
+
+Changes for Shifu-0.10.0
+    * Tree Ensemble Model Improvement
+        a) Speed GBT Training
+            https://github.com/ShifuML/shifu/issues/252
+        b) Auto Skip Features with only One Bin 
+            https://github.com/ShifuML/shifu/issues/276
+        c) Cover GBT Regression Score To Probability 
+            https://github.com/ShifuML/shifu/issues/254
+        d) Add Early Stop Feature for GBT
+            https://github.com/ShifuML/shifu/issues/230
+        e) By Default Disable Tmp Model Output in NN and GBT, RF
+            https://github.com/ShifuML/shifu/issues/231
+        f) GBT & RF PMML Support
+            https://github.com/ShifuML/shifu/issues/232
+        g) Grid Search: Compute validation error on latest 10 or 20 iterations 
+            https://github.com/ShifuML/shifu/issues/233
+        h) Missing Value Processing in Tree Model
+            https://github.com/ShifuML/shifu/issues/239
+        i) Make Tree Model Without Dependency 
+            https://github.com/ShifuML/shifu/issues/253
+        j) Compress Tree Model by Gzip to Save Size
+            https://github.com/ShifuML/shifu/issues/272
+    * Train Step Improvement
+        a) Sampling Logic Change in Training
+            https://github.com/ShifuML/shifu/issues/310
+        b) Add Stratified Sampling in Training Step
+            https://github.com/ShifuML/shifu/issues/311
+        c) Add Cross Validation in Train Step
+            https://github.com/ShifuML/shifu/issues/312
+        d) Guagua Job Failed Improvement
+            https://github.com/ShifuML/shifu/issues/237
+        e) Disable Tmp Model Output in NN and GBT, RF
+            https://github.com/ShifuML/shifu/issues/231
+        f) Support Redo Training Without Weight after Weighted Norm
+            https://github.com/ShifuML/shifu/issues/315
+    * VarSel Step Improvement
+        a) Refine VarSel Configurations
+            https://github.com/ShifuML/shifu/issues/262
+        b) Enable Multiple Threading in Sensitivity Analysis
+            https://github.com/ShifuML/shifu/issues/213
+        c) Add Feature Importance for Tree Model VarSelect
+            https://github.com/ShifuML/shifu/issues/218
+    * Stats Step Improvement
+        a) Add More Stats in Stats Step
+            https://github.com/ShifuML/shifu/issues/313
+        b) Change Distinct Count Computing from Init to Stats
+            https://github.com/ShifuML/shifu/issues/314
+        c) Bugs & Others
+            1) Default meta/categorical file support
+            2) Bug in stats on bad feature type
+            3) Add more stats on each MR job like number of filter records.
+    * Others
+        a) Eval Step Improvement
+            https://github.com/ShifuML/shifu/issues/150
+        b) CSV Format File Support
+            https://github.com/ShifuML/shifu/issues/258
+        c) Combo Model Training (Beta)
+            https://github.com/ShifuML/shifu/issues/316
+
+Changes for Shifu-0.9.0
+    * Random Forest Enhancement
+        a) RF & GBDT Sort Categorical Features
+            https://github.com/ShifuML/shifu/issues/203
+        b) RF & GBDT Categorical Variables Unsorted Supported
+            https://github.com/ShifuML/shifu/issues/202
+    * Gradient Boosted Trees Enhancement
+        a) Master Fail Over
+            https://github.com/ShifuML/shifu/issues/227
+        b) GBT Support Continuous Model Training
+            https://github.com/ShifuML/shifu/issues/222
+        c) RF & GBDT Sort Categorical Features
+            https://github.com/ShifuML/shifu/issues/203
+        d) RF & GBDT Categorical Variables Unsorted Supported
+            https://github.com/ShifuML/shifu/issues/202
+    * Grid Search Support
+        a) NN Grid Search
+            https://github.com/ShifuML/shifu/issues/214
+        b) RF & GBDT Grid Search
+            https://github.com/ShifuML/shifu/issues/213
+    * Random Search Support
+        https://github.com/ShifuML/shifu/issues/234
+    * Multiple Classfication Enhancement
+        a) Add Random Forest Multiple Classfication
+            https://github.com/ShifuML/shifu/issues/235
+        b) Add OneVSAll Multiple Classfication for NN, RF and GBDT
+            https://github.com/ShifuML/shifu/issues/209
+    * Dynamic Binning Support
+        https://github.com/ShifuML/shifu/issues/236
+    * Others
+        a) https://github.com/ShifuML/shifu/issues/195
+        b) https://github.com/ShifuML/shifu/issues/229
+
+Changes for Shifu-0.2.8
+    * Random Forest Support
+        a) https://github.com/ShifuML/shifu/issues/123
+        b) https://github.com/ShifuML/shifu/issues/122
+    * Gradient Boosted Trees Support
+        a) https://github.com/ShifuML/shifu/issues/124
+        b) https://github.com/ShifuML/shifu/issues/122
+    * Feature Importance in 'posttrain' Step
+        https://github.com/ShifuML/shifu/issues/180
+    * PSI Feature in 'stats' Step
+        https://github.com/ShifuML/shifu/issues/196
+    * Correlation Between Features in 'norm' Step
+        https://github.com/ShifuML/shifu/issues/146
+    * Others
+        a) https://github.com/ShifuML/shifu/issues/190
+        b) https://github.com/ShifuML/shifu/issues/181
+        c) https://github.com/ShifuML/shifu/issues/179
+        d) https://github.com/ShifuML/shifu/issues/178
+
+Changes for Shifu-0.2.7
+    * Sampling Function Improvement
+        a) https://github.com/ShifuML/shifu/issues/93
+        b) https://github.com/ShifuML/shifu/issues/140
+    * Binning Improvement
+        a) https://github.com/ShifuML/shifu/issues/148
+        b) https://github.com/ShifuML/shifu/issues/157
+    * Stats Step Improvement
+        a) https://github.com/ShifuML/shifu/issues/155
+        b) https://github.com/ShifuML/shifu/issues/137
+        c) https://github.com/ShifuML/shifu/issues/75
+    * Norm Step Improvement
+        a) https://github.com/ShifuML/shifu/issues/103
+        b) https://github.com/ShifuML/shifu/issues/120
+        c) https://github.com/ShifuML/shifu/issues/131
+        d) https://github.com/ShifuML/shifu/issues/142
+    * Train Step Improvement
+        a) https://github.com/ShifuML/shifu/issues/66
+        b) https://github.com/ShifuML/shifu/issues/159
+        c) https://github.com/ShifuML/shifu/issues/166
+        d) https://github.com/ShifuML/shifu/issues/106
+    * Variable Selection Step Improvement
+        a) https://github.com/ShifuML/shifu/issues/57
+        b) https://github.com/ShifuML/shifu/issues/102
+    * Distributed LR Algorithm Improvement (Experimental)
+        a) https://github.com/ShifuML/shifu/issues/56
+    * Multiple classes NN Algorithm Improvement (Experimental)
+        a) https://github.com/ShifuML/shifu/issues/149
+    * Pig on Tez Support
+
+Changes for Shifu-0.2.6
+    * https://github.com/ShifuML/shifu/issues/133: Add skewness and kurtosis stats
+    * https://github.com/ShifuML/shifu/issues/134: Add CSV ColumnConfig Format for ColumnConfig.json
+    * https://github.com/ShifuML/shifu/issues/117: Add AUC Computation on Eval Step
+    * https://github.com/ShifuML/shifu/issues/118: Add Shortcut Commands: 'norm', 'varsel'
+    * https://github.com/ShifuML/shifu/issues/127: Support HDP 2.6.0.2.2.4.2-2
+    * https://github.com/ShifuML/shifu/issues/83: Add Distinct Count Statistics
+    * https://github.com/ShifuML/shifu/issues/82: Auto-detect Variable Type
+
+Changes for Shifu-0.2.5
+    * https://github.com/ShifuML/shifu/issues/97: Upgrade Guagua to latest version 0.7.0.
+        a) New features included in Guagua 0.6.0 to continuous improve performance of Shifu:
+            1) 'out-of-core' list to support worker to scale out from memory to disk.
+            2) Netty-based coordinators to decrease dependency on zookeeper and improve iteration communication performance.
+            3) Embedded zookeeper server supported not only in client as a thread, but also in master node as a process.
+        b) One improtant feature included in Guagua 0.7.0 to accelerate training in Shifu:
+            1) Partial-compete feature means in each iteration master only wait for partial workers complete and to 
+               ignore straggler worker result. 
+    * https://github.com/ShifuML/shifu/issues/105: SPDT stats performance improvement.
+        a) 'binningAlgorithm=SPDTI' (default value) in ModelConfig.json#stats is to improve scalability for big data. 
+            This solution is based on SPDT binning algorithm and called SPDT-Improvement(SPDTI).
+        b) Using SPDTI, with 20 million of records and 1600 variables, 20 minutes to finish stats. With 100 million of 
+            records and 1600 variables, 30 minutes to finish stats.
+    * https://github.com/ShifuML/shifu/issues/59: Shifu eval confusion and performance improvement.
+        a) With 20 million of records and 1600 variables, 13 minutes to finish eval step compared with 20 minutes in 
+            Shifu 0.2.4.
+    * https://github.com/ShifuML/shifu/issues/64: Set the Hadoop parallel number automatically.
+        a) With input data set increase, user no need to set 'hadoopParallelNumber' in shifuconfig.
+        b) This value is tuned automatically new Shifu.
+    * Binning improvement
+        a) https://github.com/ShifuML/shifu/issues/77: Add missing value count as a bin.
+        b) https://github.com/ShifuML/shifu/issues/79: Add weights to binning.
+        c) https://github.com/ShifuML/shifu/issues/80: Weights binning KS/IV/WoE computing.
+    * https://github.com/ShifuML/shifu/issues/72: Support WoE transformation when doing normalization
+    * Training step improvement
+        a) https://github.com/ShifuML/shifu/issues/95: NN doesn't support 0 hidden layer.
+        b) https://github.com/ShifuML/shifu/issues/76: Add convergence parameter to Shifu d-train.
+        c) https://github.com/ShifuML/shifu/issues/84: Add local disk support to scale in-memory data set.
+        d) https://github.com/ShifuML/shifu/issues/60: Continuous model training.
+        e) https://github.com/ShifuML/shifu/issues/85: Add 'epochsPerIteration' parameter in NNWorker.
+    * Bug fix:
+        a) https://github.com/ShifuML/shifu/issues/98
+        b) https://github.com/ShifuML/shifu/issues/92
+        c) https://github.com/ShifuML/shifu/issues/70
+        d) https://github.com/ShifuML/shifu/issues/69
+        e) https://github.com/ShifuML/shifu/issues/67
+
+Changes for Shifu-0.2.4
+    * https://github.com/ShifuML/shifu/issues/20: Work flow change.
+        a) Old: new -> init -> stats -> varselect -> normalize -> train -> eval
+        b) New: new -> init -> stats -> normalize -> varselect -> train -> eval
+        c) If do variable selection again after a model, current work flow no need do normalize step, after variable selection then do training step.
+    * https://github.com/ShifuML/shifu/issues/49: Add distributed sensitivity analysis variable selection.
+        a) 'varSelect.wrapperEnabled=true' and 'wrapperBy=SE' in ModelConfig.json#varSelect part to enable sensitivity variable selection.
+        b) 'wrapperRatio' in ModelConfig.json#varSelect part is a percent to set how many variables will be removed.
+        c) To continue variable selection by sensitivity method, run 'shifu varselect' again. 
+        d) With 20 million of records and 1600 variables, 70 minutes (45 minutes for 200 epoch training and 25 minutes for sensitivity variable selection).
+    * https://github.com/ShifuML/shifu/issues/38: Improve scalability in stats step.
+        a) 'binningAlgorithm=SPDT' (default value) in ModelConfig.json#stats is to do variable statistics to improve scalability for big data.
+            Using SPDT, with 20 million of records and 1600 variables, 50 minutes to finish variable selection.
+        b) 'binningAlgorithm=MunroPat' in ModelConfig.json#stats is another approach to do variable statistics to improve scalability for big data.
+    * https://github.com/ShifuML/shifu/issues/58: Improve scalability in eval step for HDFS mode.
+        a) With 20 million of records and 1600 variables, 20 minutes to finish eval step with only 1GB driver memory.
+    * https://github.com/ShifuML/shifu/issues/61: Embeded zookeeper server support.
+        a) No need to set zookeeper servers so far since embeded zookeeper server will help on training models.
+        b) Big data training, independent zookeeper cluster is strongly recommended.
+        c) Upgrade Guagua to 0.5.0 to get support from Guagua for this feature.
+    * Add PMML standard model converter.
+        a) To convert .nn files into pmml, run "shifu export -t pmml" or just "shifu export" (The pmml is default)
+           All generated pmml files will be under <Model-Directory>/pmmls/
+    * Bug fix:
+        a) https://github.com/ShifuML/shifu/issues/45
+        b) https://github.com/ShifuML/shifu/issues/51
+        c) https://github.com/ShifuML/shifu/issues/39
+        d) https://github.com/ShifuML/shifu/issues/40
+        e) https://github.com/ShifuML/shifu/issues/45
+
+Changes for Shifu-0.2.0
+    * Make Shifu to support Hadoop-2.0 (add -Phdp-yarn when building)
+    * Show mapper progress in JobTracker and show progress in CLI when using distribute training 
+    * Validation rate = 0% is permit. In that case, save when train error goes down
+    * Generate better default ModelConfig, and create empty files for some configuration
+    * Refactor integration API - add static Normalizer.normalize(), simplify constructor of ModelRunner, and allow load models by path
+    * [Test] add support for decision-tree
+    * Enhance shifu script to make it support Hadoop1 and Hadoop2 smoothly
+    * Add new info for ColumnConfig: missing, total, missingPercentage, binWeightedPos and binWeightedNeg
+    * Update the layout of EvalPerformance.json
+    * Add version number in ModelConfig, ColumnConfig and EvalPerformance
+
+Changes for Shifu-0.1.1
+    * Use gradient aggregation to improve distributed training model performance
+    * Fix the bug when sorting the model results
+    * Fix the bug - The sourceMetaColumnFile couldn't be read when using mapred + HDFS to run evaluation
+    * Hidden custom path in ModelConfig, since most users won't change them
+    * Add meta column names in file header, when using `mapred` to run evaluation
+    
+Changes for Shifu-0.1.0
+    * Refactor the item names in ModelConfig to make it follow http://10.9.187.2/project/agreement/
+    * Move zookeeperServers, hadoopNumParallel, hadoopJobQueue, localNumParallel into ${SHIFU_HOME}/conf/shifuconfig
+    * Enable customized path for ModelSet and modelsPath,scorePath,performancePath,confusionMatrixPath in Eval
+    * Comment out storing normalized data when using MapReduce to run evaluation
+    
+Changes for Shifu-0.0.4
+    * Add distributed nn implementation based on hadoop mapreduce job.
+        a). To trigger distributed nn, set 'runMode' to 'pig';
+        b). For distributed nn, please provide your own 'zkServers' of 'train' group.
+        c). You can set 'epochsPerIteration' which means in each iteration how many iterations will be executed. 
+    * Eval refactor.
+        a). Add -score -confmat -perf options for eval command
+        b). Add "scoreColumn" option in ModelConfig.json to get the target score
+        c). Add "modelsPath" "scorePath" "confusionMatrixPath" "performancePath" options in ModelConfig.json
+        d). Change "metricColumnName" to "weightedColumn"
+    * TA457512 - Fix the bug: the delimiter of evaluation data doesn't take effect in AKKA mode
+    * TA458788 - Fix the bug: Meta validation fails to report error when - "NumHiddenNodes" : [ "a", 45 ]
+    * TA459375 - Write in-place QuickSort to replace Collections.sort() for memory consumption
+
+Changes for Shifu-0.0.3
+    * TA446629 - Fix the bug: when there is am empty file, shifu in akka mode will be stucked
+    * TA446631 - Fix the bug: user can't use \t to split data in pig mode
+    * TA446678 - Fix the bug: when user create a new model and the model already exists, the log still shows the model is created successfully
+    * TA447772 - Fix the bug: when sync data from local to HDFS, the evaluation directory are in wrong place
+    * TA449606 - Fix the bug: the filter expression logic is opposite just as design
+    * TA449907 - Fix the bug: ignore those records whose value is not numerical while columnType is N in `shifu stats`
+    * TA449910 - Fix the bug: the fixInitInput doesn't work in model training
+    * TA451113 - Fix the bug: the calculating stats step consume more memory than before
+    * TA455487 - Fix the bug: Shifu doesn't support /data/output/{04,05}/*/part* in Akka mode
+    * TA457214 - Fix the bug: if the user put target column into Force.Remove and Force.Select, Shifu won't detect
+    * TA457490 - Fix the bug: evaluation data couldn't use different delimiter in AKKA mode
+    * DE30848 - hdfs + akka mode, 4g memory for 200m data but got OOM at stats step
+    * DE30836 - Non-existing target column might be better to be validated at init step
+    * DE30915 - disable the forceSelected option but still got the validation error
+    * DE30916 - Add forceRemove file at varselect step leads to Target column be covered by ForceRemove flag
+    * DE30922 - LearningRate cannot cast int to double
+    * DE30467 - The old model files should be cleaned up before training.
+    
+Changes for Shifu-0.0.2
+    * DE29230 - Fix the bugs if the training data path is HDFS globe path
+    * DE29231 - User only need put the configuration in local file system
+    * US201443 - PathFinder refactor, split Manager class into several processes
+    * US207747 - Add option in ModelConfig for job queue name
+    * US177973 - Update code license and test data license 
+    * Don't copy data and purify data when run `shifu init`
+    * Add more comments
+    
+Changes for Shifu-0.0.1
+    * US152414 - Refactor ModelConfig
+    * US195914 - Refactor ColumnConifg
+    * US193995 - shutdown thread if errors occurred in akka mode

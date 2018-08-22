@@ -1,0 +1,693 @@
+2018-08-01 10:57:02:INFO CreateModelProcessor [main] - Creating ModelSet Folder: /home/yexiao/shifu-master/dataset1/dataset1...
+2018-08-01 10:57:02:INFO CreateModelProcessor [main] - Creating Initial ModelConfig.json ...
+2018-08-01 10:57:04:INFO CreateModelProcessor [main] - Enable DIST/MAPRED mode because Hadoop cluster is detected.
+2018-08-01 10:57:16:INFO InitModelProcessor [main] - Step Start: init
+2018-08-01 10:57:24:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-01 10:57:24:INFO BasicModelProcessor [main] - intoKeras
+2018-08-01 10:57:24:INFO BasicModelProcessor [main] - Training Data Soure Location: HDFS
+2018-08-01 10:57:24:INFO CommonUtils [main] - The first valid file is - hdfs://master:9000/user/yexiao/cancer-judgement/DataSet1/part-00
+2018-08-01 10:57:25:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 10:57:25:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-01 10:57:25:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-01 10:57:26:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-01 10:57:26:INFO InitModelProcessor [main] - Step Finished: init with 10391 ms
+2018-08-01 10:57:26:INFO ShifuCLI [main] - ModelSet initilization is successful. Please continue next step by using 'shifu stats'.
+2018-08-01 10:57:32:INFO StatsModelProcessor [main] - Step Start: stats
+2018-08-01 10:57:38:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-01 10:57:38:INFO BasicModelProcessor [main] - intoKeras
+2018-08-01 10:57:38:INFO BasicModelProcessor [main] - Training Data Soure Location: HDFS
+2018-08-01 10:57:38:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 10:57:38:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-01 10:57:39:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-01 10:57:42:INFO MapReducerStatsWorker [main] - delete historical pre-train data
+2018-08-01 10:57:42:INFO SPDTIStatsExecutor [main] - Run SPDTI to stats ... 
+2018-08-01 10:57:42:INFO PigExecutor [main] - Pig ExecType: MAPREDUCE
+2018-08-01 10:57:43:INFO deprecation [main] - mapred.job.tracker is deprecated. Instead, use mapreduce.jobtracker.address
+2018-08-01 10:57:43:INFO deprecation [main] - fs.default.name is deprecated. Instead, use fs.defaultFS
+2018-08-01 10:57:43:INFO HExecutionEngine [main] - Connecting to hadoop file system at: hdfs://master:9000
+2018-08-01 10:57:43:INFO CommonUtils [main] - jar path is ../target/shifu-0.11.1/lib/*.jar
+2018-08-01 10:57:43:INFO PigExecutor [main] - Pig script relative path is ../target/shifu-0.11.1/scripts/StatsSpdtI.pig
+2018-08-01 10:57:43:ERROR StatsModelProcessor [main] - Error:
+java.lang.RuntimeException: java.lang.NullPointerException
+	at ml.shifu.shifu.core.processor.stats.MapReducerStatsWorker.doStats(MapReducerStatsWorker.java:138)
+	at ml.shifu.shifu.core.processor.StatsModelProcessor.run(StatsModelProcessor.java:238)
+	at ml.shifu.shifu.ShifuCLI.calModelStats(ShifuCLI.java:431)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:218)
+Caused by: java.lang.NullPointerException
+	at java.io.Reader.<init>(Reader.java:78)
+	at java.io.InputStreamReader.<init>(InputStreamReader.java:72)
+	at org.apache.pig.impl.PigContext.doParamSubstitution(PigContext.java:390)
+	at org.apache.pig.PigServer.registerScript(PigServer.java:693)
+	at org.apache.pig.PigServer.registerScript(PigServer.java:662)
+	at ml.shifu.shifu.pig.PigExecutor.submitJob(PigExecutor.java:144)
+	at ml.shifu.shifu.pig.PigExecutor.submitJob(PigExecutor.java:95)
+	at ml.shifu.shifu.core.processor.stats.SPDTIStatsExecutor.runStatsPig(SPDTIStatsExecutor.java:55)
+	at ml.shifu.shifu.core.processor.stats.MapReducerStatsWorker.doStats(MapReducerStatsWorker.java:134)
+	... 3 more
+2018-08-01 10:57:43:WARN ShifuCLI [main] - Error in model set stats computation, please report issue on http:/github.com/shifuml/shifu/issues.
+2018-08-01 11:00:04:INFO StatsModelProcessor [main] - Step Start: stats
+2018-08-01 11:00:15:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-01 11:00:15:INFO BasicModelProcessor [main] - intoKeras
+2018-08-01 11:00:15:INFO BasicModelProcessor [main] - Training Data Soure Location: HDFS
+2018-08-01 11:00:15:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 11:00:15:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-01 11:00:15:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-01 11:00:20:INFO MapReducerStatsWorker [main] - delete historical pre-train data
+2018-08-01 11:00:20:INFO SPDTIStatsExecutor [main] - Run SPDTI to stats ... 
+2018-08-01 11:00:20:INFO PigExecutor [main] - Pig ExecType: MAPREDUCE
+2018-08-01 11:00:21:INFO deprecation [main] - mapred.job.tracker is deprecated. Instead, use mapreduce.jobtracker.address
+2018-08-01 11:00:21:INFO deprecation [main] - fs.default.name is deprecated. Instead, use fs.defaultFS
+2018-08-01 11:00:21:INFO HExecutionEngine [main] - Connecting to hadoop file system at: hdfs://master:9000
+2018-08-01 11:00:21:INFO CommonUtils [main] - jar path is ../target/shifu-0.11.1/lib/*.jar
+2018-08-01 11:00:21:INFO PigExecutor [main] - Pig script relative path is ../target/shifu-0.11.1/scripts/StatsSpdtI.pig
+2018-08-01 11:00:21:ERROR StatsModelProcessor [main] - Error:
+java.lang.RuntimeException: java.lang.NullPointerException
+	at ml.shifu.shifu.core.processor.stats.MapReducerStatsWorker.doStats(MapReducerStatsWorker.java:138)
+	at ml.shifu.shifu.core.processor.StatsModelProcessor.run(StatsModelProcessor.java:238)
+	at ml.shifu.shifu.ShifuCLI.calModelStats(ShifuCLI.java:431)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:218)
+Caused by: java.lang.NullPointerException
+	at java.io.Reader.<init>(Reader.java:78)
+	at java.io.InputStreamReader.<init>(InputStreamReader.java:72)
+	at org.apache.pig.impl.PigContext.doParamSubstitution(PigContext.java:390)
+	at org.apache.pig.PigServer.registerScript(PigServer.java:693)
+	at org.apache.pig.PigServer.registerScript(PigServer.java:662)
+	at ml.shifu.shifu.pig.PigExecutor.submitJob(PigExecutor.java:144)
+	at ml.shifu.shifu.pig.PigExecutor.submitJob(PigExecutor.java:95)
+	at ml.shifu.shifu.core.processor.stats.SPDTIStatsExecutor.runStatsPig(SPDTIStatsExecutor.java:55)
+	at ml.shifu.shifu.core.processor.stats.MapReducerStatsWorker.doStats(MapReducerStatsWorker.java:134)
+	... 3 more
+2018-08-01 11:00:21:WARN ShifuCLI [main] - Error in model set stats computation, please report issue on http:/github.com/shifuml/shifu/issues.
+2018-08-01 11:00:51:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-01 11:01:00:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-01 11:01:00:INFO BasicModelProcessor [main] - intoKeras
+2018-08-01 11:01:00:INFO BasicModelProcessor [main] - Training Data Soure Location: HDFS
+2018-08-01 11:01:01:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 11:01:01:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-01 11:01:01:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 11:01:01:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-01 11:01:01:INFO TrainModelProcessor [main] - Generate Model Json File in Directory models/
+2018-08-01 11:01:04:INFO PigExecutor [main] - Bulding Process To Execute Python
+2018-08-01 11:01:04:INFO PigExecutor [main] - Error
+2018-08-01 11:01:04:INFO TrainModelProcessor [main] - Train Successful
+2018-08-01 11:01:06:INFO TrainModelProcessor [main] - Step Finished: train with 15045 ms
+2018-08-01 11:01:06:INFO ShifuCLI [main] - Do model set training successfully. Please continue next step by using 'shifu posttrain' or if no need posttrain you can go through with 'shifu eval'.
+2018-08-01 11:06:23:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-01 11:06:29:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-01 11:06:29:INFO BasicModelProcessor [main] - intoKeras
+2018-08-01 11:06:29:INFO BasicModelProcessor [main] - Training Data Soure Location: HDFS
+2018-08-01 11:06:30:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 11:06:30:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-01 11:06:30:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 11:06:30:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-01 11:06:30:INFO TrainModelProcessor [main] - Generate Model Json File in Directory models/
+2018-08-01 11:06:33:INFO PigExecutor [main] - Bulding Process To Execute Python
+2018-08-01 11:06:33:INFO PigExecutor [main] - Error
+2018-08-01 11:06:33:INFO TrainModelProcessor [main] - Train Successful
+2018-08-01 11:06:34:INFO TrainModelProcessor [main] - Step Finished: train with 10942 ms
+2018-08-01 11:06:34:INFO ShifuCLI [main] - Do model set training successfully. Please continue next step by using 'shifu posttrain' or if no need posttrain you can go through with 'shifu eval'.
+2018-08-01 01:36:23:INFO InitModelProcessor [main] - Step Start: init
+2018-08-01 01:36:29:WARN ModelInspector [main] - Header file is set to empty, shifu will try to detect schema by first line of input and header delimiter.
+2018-08-01 01:36:29:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-01 01:36:29:INFO BasicModelProcessor [main] - intoKeras
+2018-08-01 01:36:29:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-01 01:36:29:INFO CommonUtils [main] - The first valid file is - file:/home/yexiao/shifu-master/target/shifu-0.11.1/example/cancer-judgement/DataStore/DataSet1/part-00
+2018-08-01 01:36:29:WARN InitModelProcessor [main] - No header path is provided, we will try to read first line and detect schema.
+2018-08-01 01:36:29:WARN InitModelProcessor [main] - Schema in ColumnConfig.json are named as  index 0, 1, 2, 3 ...
+2018-08-01 01:36:29:WARN InitModelProcessor [main] - Please make sure weight column and tag column are also taking index as name.
+2018-08-01 01:36:29:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 01:36:30:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-01 01:36:30:ERROR InitModelProcessor [main] - Target is not valid: diagnosis
+2018-08-01 01:36:30:ERROR InitModelProcessor [main] - Please check your header file null and your header delimiter |
+2018-08-01 01:36:30:WARN ShifuCLI [main] - Error in ModelSet initilization, please check your shifu config or report issue
+2018-08-01 01:37:03:INFO InitModelProcessor [main] - Step Start: init
+2018-08-01 01:37:09:WARN ModelInspector [main] - Header file is set to empty, shifu will try to detect schema by first line of input and header delimiter.
+2018-08-01 01:37:09:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-01 01:37:09:INFO BasicModelProcessor [main] - intoKeras
+2018-08-01 01:37:09:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-01 01:37:09:INFO CommonUtils [main] - The first valid file is - file:/home/yexiao/shifu-master/target/shifu-0.11.1/example/cancer-judgement/DataStore/DataSet1/part-00
+2018-08-01 01:37:09:WARN InitModelProcessor [main] - No header path is provided, we will try to read first line and detect schema.
+2018-08-01 01:37:09:WARN InitModelProcessor [main] - Schema in ColumnConfig.json are named as  index 0, 1, 2, 3 ...
+2018-08-01 01:37:09:WARN InitModelProcessor [main] - Please make sure weight column and tag column are also taking index as name.
+2018-08-01 01:37:09:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 01:37:09:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-01 01:37:09:ERROR InitModelProcessor [main] - Target is not valid: diagnosis
+2018-08-01 01:37:09:ERROR InitModelProcessor [main] - Please check your header file null and your header delimiter |
+2018-08-01 01:37:09:WARN ShifuCLI [main] - Error in ModelSet initilization, please check your shifu config or report issue
+2018-08-01 01:41:01:INFO InitModelProcessor [main] - Step Start: init
+2018-08-01 01:41:07:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-01 01:41:07:INFO BasicModelProcessor [main] - intoKeras
+2018-08-01 01:41:07:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-01 01:41:07:INFO CommonUtils [main] - The first valid file is - file:/home/yexiao/shifu-master/target/shifu-0.11.1/example/cancer-judgement/DataStore/DataSet1/part-00
+2018-08-01 01:41:07:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 01:41:07:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-01 01:41:07:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-01 01:41:07:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-01 01:41:07:INFO InitModelProcessor [main] - Step Finished: init with 6448 ms
+2018-08-01 01:41:07:INFO ShifuCLI [main] - ModelSet initilization is successful. Please continue next step by using 'shifu stats'.
+2018-08-01 01:41:17:INFO StatsModelProcessor [main] - Step Start: stats
+2018-08-01 01:41:22:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-01 01:41:22:INFO BasicModelProcessor [main] - intoKeras
+2018-08-01 01:41:22:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-01 01:41:22:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 01:41:22:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-01 01:41:22:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-01 01:41:23:INFO AkkaStatsWorker [main] - Num of Scanners: 1
+2018-08-01 01:41:25:INFO AkkaSystemExecutor [main] - Create Akka system to calculate stats
+2018-08-01 01:41:25:INFO CalculateStatsActor [ShifuActorSystem-akka.actor.default-dispatcher-3] - Creating Master Actor ...
+2018-08-01 01:41:25:INFO CalculateStatsActor [ShifuActorSystem-akka.actor.default-dispatcher-3] - AvailableProcessors: 1
+2018-08-01 01:41:25:INFO DataLoadWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - DataLoaderActor Starting ...
+2018-08-01 01:41:25:INFO DataLoadWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - Totally read 429 records.
+2018-08-01 01:41:25:INFO DataLoadWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - DataLoaderActor Finished: Loaded 429 Records.
+2018-08-01 01:41:25:INFO DataFilterWorker [ShifuActorSystem-akka.actor.default-dispatcher-4] - starting to filter data ... 
+2018-08-01 01:41:25:INFO DataFilterWorker [ShifuActorSystem-akka.actor.default-dispatcher-4] - there are 429 records after filter.
+2018-08-01 01:41:25:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 1 with 429 value object
+2018-08-01 01:41:25:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 2 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 3 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 4 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 5 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 6 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 7 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 8 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 9 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 10 with 429 value object
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-4] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-5] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-6] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-7] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-9] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-8] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-2] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 11 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 12 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 13 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 14 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 15 with 429 value object
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-9] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 16 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 17 with 429 value object
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-6] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 18 with 429 value object
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-8] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 19 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 20 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 21 with 429 value object
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-4] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-2] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-4] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 22 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 23 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 24 with 429 value object
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-5] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-7] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-5] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-4] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-2] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-8] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-2] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-6] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-9] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-5] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 25 with 429 value object
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-7] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 26 with 429 value object
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 27 with 429 value object
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-2] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-7] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 28 with 429 value object
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-9] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-2] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 29 with 429 value object
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-7] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO DataPrepareWorker [ShifuActorSystem-akka.actor.default-dispatcher-3] - send 30 with 429 value object
+2018-08-01 01:41:26:INFO StatsCalculateWorker [ShifuActorSystem-akka.actor.default-dispatcher-5] - posTags - [M], negTags - [B], first example tag - M
+2018-08-01 01:41:26:INFO CalculateStatsActor [ShifuActorSystem-akka.actor.default-dispatcher-7] - Received 30 messages. Finished Calculating Stats.
+2018-08-01 01:41:27:INFO BasicModelProcessor [main] - Saving ColumnConfig into tmp/ColumnConfig.json ... 
+2018-08-01 01:41:27:INFO StatsModelProcessor [main] - Step Finished: stats with 9715 ms
+2018-08-01 01:41:27:INFO ShifuCLI [main] - Do model set statistic successfully. Please continue next step by using 'shifu normalize or shifu norm or shifu transform'. For tree ensemble model, no need do norm, please continue next step by using 'shifu varsel'
+2018-08-01 01:41:35:INFO NormalizeModelProcessor [main] - Step Start: normalize
+2018-08-01 01:41:40:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-01 01:41:40:INFO BasicModelProcessor [main] - intoKeras
+2018-08-01 01:41:40:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-01 01:41:40:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 01:41:40:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-01 01:41:40:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-01 01:41:43:INFO AkkaSystemExecutor [main] - Create Akka system to normalize data
+2018-08-01 01:41:43:INFO NormalizeDataActor [ShifuActorSystem-akka.actor.default-dispatcher-4] - Creating Master Actor ...
+2018-08-01 01:41:43:INFO NormalizeDataActor [ShifuActorSystem-akka.actor.default-dispatcher-4] - AvailableProcessors: 1
+2018-08-01 01:41:43:INFO DataLoadWorker [ShifuActorSystem-akka.actor.default-dispatcher-2] - DataLoaderActor Starting ...
+2018-08-01 01:41:43:INFO DataLoadWorker [ShifuActorSystem-akka.actor.default-dispatcher-2] - Totally read 429 records.
+2018-08-01 01:41:43:INFO DataLoadWorker [ShifuActorSystem-akka.actor.default-dispatcher-2] - DataLoaderActor Finished: Loaded 429 Records.
+2018-08-01 01:41:44:INFO DataFilterWorker [ShifuActorSystem-akka.actor.default-dispatcher-6] - starting to filter data ... 
+2018-08-01 01:41:44:INFO DataFilterWorker [ShifuActorSystem-akka.actor.default-dispatcher-6] - there are 429 records after filter.
+2018-08-01 01:41:44:INFO NormalizeDataActor [ShifuActorSystem-akka.actor.default-dispatcher-6] - Received 1 messages. Finished normalizing train data.
+2018-08-01 01:41:45:INFO NormalizeModelProcessor [main] - Step Finished: normalize with 9741 ms
+2018-08-01 01:41:45:INFO ShifuCLI [main] - Do model set normalization successfully. Please continue next step by using 'shifu varselect or shifu varsel'.
+2018-08-01 01:41:51:INFO VarSelectModelProcessor [main] - Step Start: varselect
+2018-08-01 01:41:56:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-01 01:41:56:INFO BasicModelProcessor [main] - intoKeras
+2018-08-01 01:41:56:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-01 01:41:57:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 01:41:57:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-01 01:41:57:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-01 01:41:57:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-01 01:41:57:INFO VariableSelector [main] - Creating VariableSelector...
+2018-08-01 01:41:57:INFO VariableSelector [main] -     - Method: Filter
+2018-08-01 01:41:57:INFO VariableSelector [main] - Start Variable Selection...
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 VarSelectEnabled: true
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 VarSelectBy: KS
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 VarSelectNum: 200
+2018-08-01 01:41:57:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 Skip meta, weight or target column: diagnosis
+2018-08-01 01:41:57:INFO VariableSelector [main] - Expected selected columns:30
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=83.06493506493507(Rank=1): column_10
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=83.06493506493507(Rank=2): column_30
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=81.61038961038962(Rank=3): column_25
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=77.97402597402598(Rank=4): column_23
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=77.6103896103896(Rank=5): column_26
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=76.51948051948052(Rank=6): column_9
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=73.40259740259741(Rank=7): column_5
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=71.5844155844156(Rank=8): column_16
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=71.42857142857143(Rank=9): column_29
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=71.2207792207792(Rank=10): column_6
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=70.85714285714285(Rank=11): column_3
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=60.46753246753246(Rank=12): column_13
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=59.22077922077922(Rank=13): column_15
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=58.285714285714285(Rank=14): column_8
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=56.67532467532468(Rank=15): column_28
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=49.97402597402597(Rank=16): column_19
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=49.03896103896104(Rank=17): column_20
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=48.311688311688314(Rank=18): column_4
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=46.7012987012987(Rank=19): column_24
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=41.1948051948052(Rank=20): column_27
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=39.220779220779214(Rank=21): column_18
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=36.98701298701298(Rank=22): column_31
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=33.92207792207792(Rank=23): column_7
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=32.31168831168831(Rank=24): column_11
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=31.246753246753244(Rank=25): column_32
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=25.558441558441558(Rank=26): column_22
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=9.818181818181804(Rank=27): column_12
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=9.246753246753245(Rank=28): column_14
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=8.961038961038959(Rank=29): column_21
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 SelectedByKS=6.337662337662336(Rank=30): column_17
+2018-08-01 01:41:57:INFO VariableSelector [main] - Summary:
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 Selected Variables: 30
+2018-08-01 01:41:57:INFO VariableSelector [main] - 	 - By KS: 30
+2018-08-01 01:41:57:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-01 01:41:57:INFO VarSelectModelProcessor [main] - Step Finished: varselect with 6336 ms
+2018-08-01 01:41:57:INFO ShifuCLI [main] - Do model set variables selection successfully. Please continue next step by using 'shifu train'.
+2018-08-01 01:42:04:ERROR ShifuCLI [main] - Invalid command, please check help message.
+2018-08-03 11:29:57:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 11:30:01:ERROR TrainModelProcessor [main] - Error:
+ShifuException [error=1055: The grid search config file did not pass the validation.]
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:366)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.<init>(GridSearch.java:115)
+	at ml.shifu.shifu.container.meta.MetaFactory.validate(MetaFactory.java:138)
+	at ml.shifu.shifu.core.validator.ModelInspector.checkMeta(ModelInspector.java:203)
+	at ml.shifu.shifu.core.validator.ModelInspector.probe(ModelInspector.java:96)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.validateModelConfig(BasicModelProcessor.java:257)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.setUp(BasicModelProcessor.java:116)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:197)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+Caused by: java.lang.ClassCastException: java.lang.Double cannot be cast to java.util.List
+	at ml.shifu.shifu.container.meta.MetaFactory.validate(MetaFactory.java:480)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:390)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:363)
+	... 9 more
+2018-08-03 11:30:01:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 11:31:07:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 11:31:10:ERROR TrainModelProcessor [main] - Error:
+ShifuException [error=1055: The grid search config file did not pass the validation.]
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:366)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.<init>(GridSearch.java:112)
+	at ml.shifu.shifu.container.meta.MetaFactory.validate(MetaFactory.java:138)
+	at ml.shifu.shifu.core.validator.ModelInspector.checkMeta(ModelInspector.java:203)
+	at ml.shifu.shifu.core.validator.ModelInspector.probe(ModelInspector.java:96)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.validateModelConfig(BasicModelProcessor.java:257)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.setUp(BasicModelProcessor.java:116)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:197)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+Caused by: java.lang.ClassCastException: java.lang.Double cannot be cast to java.util.List
+	at ml.shifu.shifu.container.meta.MetaFactory.validate(MetaFactory.java:480)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:390)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:363)
+	... 9 more
+2018-08-03 11:31:10:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 11:34:09:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 11:34:12:ERROR TrainModelProcessor [main] - Error:
+ShifuException [error=1055: The grid search config file did not pass the validation.]
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:366)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.<init>(GridSearch.java:112)
+	at ml.shifu.shifu.container.meta.MetaFactory.validate(MetaFactory.java:138)
+	at ml.shifu.shifu.core.validator.ModelInspector.checkMeta(ModelInspector.java:203)
+	at ml.shifu.shifu.core.validator.ModelInspector.probe(ModelInspector.java:96)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.validateModelConfig(BasicModelProcessor.java:257)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.setUp(BasicModelProcessor.java:116)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:197)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+Caused by: java.lang.ClassCastException: java.lang.Double cannot be cast to java.util.List
+	at ml.shifu.shifu.container.meta.MetaFactory.validate(MetaFactory.java:480)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:390)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:363)
+	... 9 more
+2018-08-03 11:34:12:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 11:40:31:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 11:40:34:ERROR TrainModelProcessor [main] - Error:
+ShifuException [error=1055: The grid search config file did not pass the validation.]
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:366)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.<init>(GridSearch.java:112)
+	at ml.shifu.shifu.container.meta.MetaFactory.validate(MetaFactory.java:138)
+	at ml.shifu.shifu.core.validator.ModelInspector.checkMeta(ModelInspector.java:203)
+	at ml.shifu.shifu.core.validator.ModelInspector.probe(ModelInspector.java:96)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.validateModelConfig(BasicModelProcessor.java:257)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.setUp(BasicModelProcessor.java:116)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:197)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+Caused by: java.lang.ClassCastException: java.lang.Double cannot be cast to java.util.List
+	at ml.shifu.shifu.container.meta.MetaFactory.validate(MetaFactory.java:480)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:390)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:363)
+	... 9 more
+2018-08-03 11:40:34:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 01:09:48:INFO InitModelProcessor [main] - Step Start: init
+2018-08-03 01:09:51:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-03 01:09:51:INFO BasicModelProcessor [main] - intoKeras
+2018-08-03 01:09:51:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-03 01:09:51:INFO CommonUtils [main] - The first valid file is - file:/home/yexiao/shifu-master/target/shifu-0.11.1/example/cancer-judgement/DataStore/DataSet1/part-00
+2018-08-03 01:09:51:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:09:51:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-03 01:09:51:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-03 01:09:52:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-03 01:09:52:INFO InitModelProcessor [main] - Step Finished: init with 3448 ms
+2018-08-03 01:09:52:INFO ShifuCLI [main] - ModelSet initilization is successful. Please continue next step by using 'shifu stats'.
+2018-08-03 01:10:53:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 01:10:56:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-03 01:10:56:INFO BasicModelProcessor [main] - intoKeras
+2018-08-03 01:10:56:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-03 01:10:56:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:10:56:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-03 01:10:56:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:10:56:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-03 01:10:56:ERROR TrainModelProcessor [main] - Error:
+java.lang.RuntimeException: Train or Build Model Failurejava.util.ArrayList cannot be cast to java.lang.Double
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.runKerasTrain(TrainModelProcessor.java:335)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:223)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+2018-08-03 01:10:56:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 01:18:31:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 01:18:34:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-03 01:18:34:INFO BasicModelProcessor [main] - intoKeras
+2018-08-03 01:18:34:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-03 01:18:34:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:18:34:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-03 01:18:34:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:18:34:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-03 01:18:35:ERROR TrainModelProcessor [main] - Error:
+java.lang.RuntimeException: Train or Build Model FailureNo enum constant ml.shifu.shifu.dnn.Common.ActivationCatagory.Tanh
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.runKerasTrain(TrainModelProcessor.java:337)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:224)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+2018-08-03 01:18:35:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 01:19:13:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 01:19:17:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-03 01:19:17:INFO BasicModelProcessor [main] - intoKeras
+2018-08-03 01:19:17:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-03 01:19:17:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:19:17:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-03 01:19:17:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:19:17:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-03 01:19:17:ERROR TrainModelProcessor [main] - Error:
+java.lang.RuntimeException: Train or Build Model Failurenull
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.runKerasTrain(TrainModelProcessor.java:337)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:224)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+2018-08-03 01:19:17:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 01:39:37:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 01:39:40:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-03 01:39:40:INFO BasicModelProcessor [main] - intoKeras
+2018-08-03 01:39:40:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-03 01:39:41:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:39:41:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-03 01:39:41:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:39:41:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-03 01:39:41:ERROR TrainModelProcessor [main] - Error:
+java.lang.RuntimeException: Train or Build Model Failurenull
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.runKerasTrain(TrainModelProcessor.java:338)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:224)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+2018-08-03 01:39:41:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 01:46:50:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 01:46:53:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-03 01:46:53:INFO BasicModelProcessor [main] - intoKeras
+2018-08-03 01:46:53:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-03 01:46:53:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:46:53:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-03 01:46:53:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:46:53:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-03 01:46:53:ERROR TrainModelProcessor [main] - Error:
+java.lang.RuntimeException: Train or Build Model Failuref != java.lang.String
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.runKerasTrain(TrainModelProcessor.java:338)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:224)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+2018-08-03 01:46:53:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 01:50:18:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 01:50:21:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-03 01:50:21:INFO BasicModelProcessor [main] - intoKeras
+2018-08-03 01:50:21:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-03 01:50:21:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:50:21:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-03 01:50:21:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:50:21:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-03 01:50:21:INFO NNTrainer [main] - [dense_1_w = tf.Variable(tf.truncated_normal(mean=0.000000, stddev=1.000000, [0, 50]), dense_1_w)
+, dense_1_b = tf.Variable(tf.truncated_normal(mean=0.000000, stddev=1.000000, [50]), dense_1_b)
+, dense_1_out = x * dense_1_w + dense_1_b
+, dense_1_outac = tf.nn.tanh(dense_1_out)
+, loss = tf.losses.mean_squared_error(y, dense_1_outac)
+, train_step = tf.train.GradientDescentOptimizer(0.100000).minimize(loss,global_step=global_step)
+]
+2018-08-03 01:50:21:INFO TrainModelProcessor [main] - Generate Model Json File in Directory models/
+2018-08-03 01:50:21:INFO KerasExecutor [main] - Loading Parameters Successfully!
+2018-08-03 01:50:21:INFO KerasExecutor [main] - Bulding Process To Execute Python
+2018-08-03 01:50:21:INFO KerasExecutor [main] - Error When Excute Script :Cannot run program "/x/home/wzhu1/opt/glibc2.17/lib/ld-linux-x86-64.so.2": error=2, No such file or directory
+2018-08-03 01:50:21:INFO TrainModelProcessor [main] - Train Successful
+2018-08-03 01:50:21:INFO TrainModelProcessor [main] - Step Finished: train with 2973 ms
+2018-08-03 01:50:21:INFO ShifuCLI [main] - Do model set training successfully. Please continue next step by using 'shifu posttrain' or if no need posttrain you can go through with 'shifu eval'.
+2018-08-03 01:56:09:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 01:56:12:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-03 01:56:12:INFO BasicModelProcessor [main] - intoKeras
+2018-08-03 01:56:12:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-03 01:56:12:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:56:12:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-03 01:56:12:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 01:56:12:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-03 01:56:12:INFO NNTrainer [main] - x = tf.placeholder(tf.float32, [None, 0])
+
+2018-08-03 01:56:12:INFO NNTrainer [main] - y = tf.placeholder(tf.float32, [None, 1])
+
+2018-08-03 01:56:12:INFO NNTrainer [main] - dense_1_w = tf.Variable(tf.truncated_normal(mean=0.000000, stddev=1.000000, [0, 50]), dense_1_w)
+
+2018-08-03 01:56:12:INFO NNTrainer [main] - dense_1_b = tf.Variable(tf.truncated_normal(mean=0.000000, stddev=1.000000, [50]), dense_1_b)
+
+2018-08-03 01:56:12:INFO NNTrainer [main] - dense_1_out = x * dense_1_w + dense_1_b
+
+2018-08-03 01:56:12:INFO NNTrainer [main] - dense_1_outac = tf.nn.tanh(dense_1_out)
+
+2018-08-03 01:56:12:INFO NNTrainer [main] - loss = tf.losses.mean_squared_error(y, dense_1_outac)
+
+2018-08-03 01:56:12:INFO NNTrainer [main] - train_step = tf.train.GradientDescentOptimizer(0.100000).minimize(loss,global_step=global_step)
+
+2018-08-03 01:56:12:INFO TrainModelProcessor [main] - Generate Model Json File in Directory models/
+2018-08-03 01:56:12:INFO KerasExecutor [main] - Loading Parameters Successfully!
+2018-08-03 01:56:12:INFO KerasExecutor [main] - Bulding Process To Execute Python
+2018-08-03 01:56:12:INFO KerasExecutor [main] - Error When Excute Script :Cannot run program "/x/home/wzhu1/opt/glibc2.17/lib/ld-linux-x86-64.so.2": error=2, No such file or directory
+2018-08-03 01:56:12:INFO TrainModelProcessor [main] - Train Successful
+2018-08-03 01:56:12:INFO TrainModelProcessor [main] - Step Finished: train with 3238 ms
+2018-08-03 01:56:12:INFO ShifuCLI [main] - Do model set training successfully. Please continue next step by using 'shifu posttrain' or if no need posttrain you can go through with 'shifu eval'.
+2018-08-03 02:05:04:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 02:05:07:ERROR TrainModelProcessor [main] - Error:
+com.fasterxml.jackson.core.JsonParseException: Unexpected character ('.' (code 46)): was expecting comma to separate ARRAY entries
+ at [Source: java.io.BufferedReader@7c3fdb62; line: 70, column: 36]
+	at com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:1378)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:599)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:520)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextToken(ReaderBasedJsonParser.java:599)
+	at com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer.mapArray(UntypedObjectDeserializer.java:173)
+	at com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer.deserialize(UntypedObjectDeserializer.java:48)
+	at com.fasterxml.jackson.databind.deser.std.MapDeserializer._readAndBindStringMap(MapDeserializer.java:429)
+	at com.fasterxml.jackson.databind.deser.std.MapDeserializer.deserialize(MapDeserializer.java:310)
+	at com.fasterxml.jackson.databind.deser.std.MapDeserializer.deserialize(MapDeserializer.java:26)
+	at com.fasterxml.jackson.databind.deser.SettableBeanProperty.deserialize(SettableBeanProperty.java:375)
+	at com.fasterxml.jackson.databind.deser.impl.MethodProperty.deserializeAndSet(MethodProperty.java:98)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(BeanDeserializer.java:308)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:121)
+	at com.fasterxml.jackson.databind.deser.SettableBeanProperty.deserialize(SettableBeanProperty.java:375)
+	at com.fasterxml.jackson.databind.deser.impl.MethodProperty.deserializeAndSet(MethodProperty.java:98)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(BeanDeserializer.java:308)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:121)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:2797)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:1966)
+	at ml.shifu.shifu.util.JSONUtils.readValue(JSONUtils.java:49)
+	at ml.shifu.shifu.util.CommonUtils.loadJSON(CommonUtils.java:361)
+	at ml.shifu.shifu.util.CommonUtils.loadModelConfig(CommonUtils.java:259)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.loadModelConfig(BasicModelProcessor.java:474)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.setUp(BasicModelProcessor.java:115)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:198)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+2018-08-03 02:05:07:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 02:05:37:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 02:05:40:ERROR TrainModelProcessor [main] - Error:
+com.fasterxml.jackson.core.JsonParseException: Unexpected character ('.' (code 46)): was expecting comma to separate ARRAY entries
+ at [Source: java.io.BufferedReader@7c3fdb62; line: 70, column: 36]
+	at com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:1378)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:599)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:520)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextToken(ReaderBasedJsonParser.java:599)
+	at com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer.mapArray(UntypedObjectDeserializer.java:173)
+	at com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer.deserialize(UntypedObjectDeserializer.java:48)
+	at com.fasterxml.jackson.databind.deser.std.MapDeserializer._readAndBindStringMap(MapDeserializer.java:429)
+	at com.fasterxml.jackson.databind.deser.std.MapDeserializer.deserialize(MapDeserializer.java:310)
+	at com.fasterxml.jackson.databind.deser.std.MapDeserializer.deserialize(MapDeserializer.java:26)
+	at com.fasterxml.jackson.databind.deser.SettableBeanProperty.deserialize(SettableBeanProperty.java:375)
+	at com.fasterxml.jackson.databind.deser.impl.MethodProperty.deserializeAndSet(MethodProperty.java:98)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(BeanDeserializer.java:308)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:121)
+	at com.fasterxml.jackson.databind.deser.SettableBeanProperty.deserialize(SettableBeanProperty.java:375)
+	at com.fasterxml.jackson.databind.deser.impl.MethodProperty.deserializeAndSet(MethodProperty.java:98)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(BeanDeserializer.java:308)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:121)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:2797)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:1966)
+	at ml.shifu.shifu.util.JSONUtils.readValue(JSONUtils.java:49)
+	at ml.shifu.shifu.util.CommonUtils.loadJSON(CommonUtils.java:361)
+	at ml.shifu.shifu.util.CommonUtils.loadModelConfig(CommonUtils.java:259)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.loadModelConfig(BasicModelProcessor.java:474)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.setUp(BasicModelProcessor.java:115)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:198)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+2018-08-03 02:05:40:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 02:06:18:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 02:06:21:ERROR TrainModelProcessor [main] - Error:
+com.fasterxml.jackson.core.JsonParseException: Unexpected character ('.' (code 46)): was expecting comma to separate ARRAY entries
+ at [Source: java.io.BufferedReader@7c3fdb62; line: 77, column: 40]
+	at com.fasterxml.jackson.core.JsonParser._constructError(JsonParser.java:1378)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportError(ParserMinimalBase.java:599)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:520)
+	at com.fasterxml.jackson.core.json.ReaderBasedJsonParser.nextToken(ReaderBasedJsonParser.java:599)
+	at com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer.mapArray(UntypedObjectDeserializer.java:173)
+	at com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer.deserialize(UntypedObjectDeserializer.java:48)
+	at com.fasterxml.jackson.databind.deser.std.MapDeserializer._readAndBindStringMap(MapDeserializer.java:429)
+	at com.fasterxml.jackson.databind.deser.std.MapDeserializer.deserialize(MapDeserializer.java:310)
+	at com.fasterxml.jackson.databind.deser.std.MapDeserializer.deserialize(MapDeserializer.java:26)
+	at com.fasterxml.jackson.databind.deser.SettableBeanProperty.deserialize(SettableBeanProperty.java:375)
+	at com.fasterxml.jackson.databind.deser.impl.MethodProperty.deserializeAndSet(MethodProperty.java:98)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(BeanDeserializer.java:308)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:121)
+	at com.fasterxml.jackson.databind.deser.SettableBeanProperty.deserialize(SettableBeanProperty.java:375)
+	at com.fasterxml.jackson.databind.deser.impl.MethodProperty.deserializeAndSet(MethodProperty.java:98)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(BeanDeserializer.java:308)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:121)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:2797)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:1966)
+	at ml.shifu.shifu.util.JSONUtils.readValue(JSONUtils.java:49)
+	at ml.shifu.shifu.util.CommonUtils.loadJSON(CommonUtils.java:361)
+	at ml.shifu.shifu.util.CommonUtils.loadModelConfig(CommonUtils.java:259)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.loadModelConfig(BasicModelProcessor.java:474)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.setUp(BasicModelProcessor.java:115)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:198)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+2018-08-03 02:06:21:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 02:07:06:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 02:07:10:ERROR TrainModelProcessor [main] - Error:
+ShifuException [error=1055: The grid search config file did not pass the validation.]
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:371)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.<init>(GridSearch.java:112)
+	at ml.shifu.shifu.container.meta.MetaFactory.validate(MetaFactory.java:138)
+	at ml.shifu.shifu.core.validator.ModelInspector.checkMeta(ModelInspector.java:203)
+	at ml.shifu.shifu.core.validator.ModelInspector.probe(ModelInspector.java:96)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.validateModelConfig(BasicModelProcessor.java:257)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.setUp(BasicModelProcessor.java:116)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:198)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+2018-08-03 02:07:10:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 02:08:06:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 02:08:10:ERROR TrainModelProcessor [main] - Error:
+ShifuException [error=1055: The grid search config file did not pass the validation.]
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.validate(GridSearch.java:371)
+	at ml.shifu.shifu.core.dtrain.gs.GridSearch.<init>(GridSearch.java:112)
+	at ml.shifu.shifu.container.meta.MetaFactory.validate(MetaFactory.java:138)
+	at ml.shifu.shifu.core.validator.ModelInspector.checkMeta(ModelInspector.java:203)
+	at ml.shifu.shifu.core.validator.ModelInspector.probe(ModelInspector.java:96)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.validateModelConfig(BasicModelProcessor.java:257)
+	at ml.shifu.shifu.core.processor.BasicModelProcessor.setUp(BasicModelProcessor.java:116)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:198)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+2018-08-03 02:08:10:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 02:09:06:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 02:09:09:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-03 02:09:09:INFO BasicModelProcessor [main] - intoKeras
+2018-08-03 02:09:09:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-03 02:09:09:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 02:09:09:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-03 02:09:09:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 02:09:09:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-03 02:09:10:ERROR TrainModelProcessor [main] - Error:
+java.lang.RuntimeException: Train or Build Model FailureIndex: 1, Size: 1
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.runKerasTrain(TrainModelProcessor.java:338)
+	at ml.shifu.shifu.core.processor.TrainModelProcessor.run(TrainModelProcessor.java:224)
+	at ml.shifu.shifu.ShifuCLI.trainModel(ShifuCLI.java:460)
+	at ml.shifu.shifu.ShifuCLI.main(ShifuCLI.java:256)
+2018-08-03 02:09:10:INFO ShifuCLI [main] - Do model training with error, please check error message or report issue.
+2018-08-03 02:09:42:INFO TrainModelProcessor [main] - Step Start: train
+2018-08-03 02:09:45:INFO BasicModelProcessor [main] - ModelConfig Validation - OK
+2018-08-03 02:09:45:INFO BasicModelProcessor [main] - intoKeras
+2018-08-03 02:09:45:INFO BasicModelProcessor [main] - Training Data Soure Location: LOCAL
+2018-08-03 02:09:45:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 02:09:45:WARN ModelConfig [main] - 'varSelect::candidateColumnNameFile' is not set and default candidateColumnNameFile: columns/candidate.column.names is not found, no candidate config files, please check and set candidate columns in 'varSelect::candidateColumnNameFile'.
+2018-08-03 02:09:45:WARN ModelConfig [main] - 'dataSet::hybridColumnNameFile' is not set and default hybridColumnNameFile: columns/hybrid.column.names is not found, no hybrid configs.
+2018-08-03 02:09:45:INFO BasicModelProcessor [main] - Saving ColumnConfig...
+2018-08-03 02:09:45:INFO NNTrainer [main] - x = tf.placeholder(tf.float32, [None, 0])
+
+2018-08-03 02:09:45:INFO NNTrainer [main] - y = tf.placeholder(tf.float32, [None, 1])
+
+2018-08-03 02:09:45:INFO NNTrainer [main] - dense_1_w = tf.Variable(tf.truncated_normal(mean=0.000000, stddev=1.000000, [0, 50]), dense_1_w)
+
+2018-08-03 02:09:45:INFO NNTrainer [main] - dense_1_b = tf.Variable(tf.truncated_normal(mean=0.000000, stddev=1.000000, [50]), dense_1_b)
+
+2018-08-03 02:09:45:INFO NNTrainer [main] - dense_1_out = x * dense_1_w + dense_1_b
+
+2018-08-03 02:09:45:INFO NNTrainer [main] - dense_1_outac = tf.nn.tanh(dense_1_out)
+
+2018-08-03 02:09:45:INFO NNTrainer [main] - dropout_1_outac = tf.nn.dropout(dense_1_outac, 0.100000)
+2018-08-03 02:09:45:INFO NNTrainer [main] - dense_2_w = tf.Variable(tf.constant(0.000000,[50, 30]), dense_2_w)
+
+2018-08-03 02:09:45:INFO NNTrainer [main] - dense_2_b = tf.Variable(tf.constant(0.000000,[30]), dense_2_b)
+
+2018-08-03 02:09:45:INFO NNTrainer [main] - dense_2_out = dropout_1_outac * dense_2_w + dense_2_b
+
+2018-08-03 02:09:45:INFO NNTrainer [main] - dense_2_outac = tf.nn.sigmoid(dense_2_out)
+
+2018-08-03 02:09:45:INFO NNTrainer [main] - loss = tf.losses.mean_squared_error(y, dense_2_outac)
+
+2018-08-03 02:09:45:INFO NNTrainer [main] - train_step = tf.train.GradientDescentOptimizer(0.100000).minimize(loss,global_step=global_step)
+
+2018-08-03 02:09:45:INFO TrainModelProcessor [main] - Generate Model Json File in Directory models/
+2018-08-03 02:09:45:INFO KerasExecutor [main] - Loading Parameters Successfully!
+2018-08-03 02:09:45:INFO KerasExecutor [main] - Bulding Process To Execute Python
+2018-08-03 02:09:45:INFO KerasExecutor [main] - Error When Excute Script :Cannot run program "/x/home/wzhu1/opt/glibc2.17/lib/ld-linux-x86-64.so.2": error=2, No such file or directory
+2018-08-03 02:09:45:INFO TrainModelProcessor [main] - Train Successful
+2018-08-03 02:09:45:INFO TrainModelProcessor [main] - Step Finished: train with 3590 ms
+2018-08-03 02:09:45:INFO ShifuCLI [main] - Do model set training successfully. Please continue next step by using 'shifu posttrain' or if no need posttrain you can go through with 'shifu eval'.

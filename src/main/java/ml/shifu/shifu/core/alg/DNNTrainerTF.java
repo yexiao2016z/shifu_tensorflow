@@ -1,0 +1,530 @@
+package ml.shifu.shifu.core.alg;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import ml.shifu.shifu.container.ModelInitInputObject;
+import ml.shifu.shifu.container.obj.ColumnConfig;
+import ml.shifu.shifu.container.obj.ModelConfig;
+import ml.shifu.shifu.container.obj.RawSourceData.SourceType;
+import ml.shifu.shifu.core.AbstractTrainer;
+import ml.shifu.shifu.core.ConvergeJudger;
+import ml.shifu.shifu.core.MSEWorker;
+import ml.shifu.shifu.core.dtrain.CommonConstants;
+import ml.shifu.shifu.fs.ShifuFileUtils;
+import ml.shifu.shifu.keras.KerasExecutor;
+import ml.shifu.shifu.util.Environment;
+import ml.shifu.shifu.util.JSONUtils;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.encog.engine.network.activation.ActivationLOG;
+import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.engine.network.activation.ActivationSIN;
+import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationTANH;
+import org.encog.mathutil.IntRange;
+import org.encog.ml.data.MLDataSet;
+import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.propagation.back.Backpropagation;
+import org.encog.neural.networks.training.propagation.manhattan.ManhattanPropagation;
+import org.encog.neural.networks.training.propagation.quick.QuickPropagation;
+import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.neural.networks.training.propagation.scg.ScaledConjugateGradient;
+import org.encog.persist.EncogDirectoryPersistence;
+import org.encog.util.concurrency.DetermineWorkload;
+import org.encog.util.concurrency.EngineConcurrency;
+import org.encog.util.concurrency.TaskGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import ml.shifu.shifu.dnn.Common;
+import ml.shifu.shifu.dnn.Common.*;
+import ml.shifu.shifu.dnn.Initializer.Constant;
+import ml.shifu.shifu.dnn.Initializer.Initializer;
+import ml.shifu.shifu.dnn.Initializer.RandomNormal;
+import ml.shifu.shifu.dnn.Initializer.RandomUniform;
+import ml.shifu.shifu.dnn.Layer.Dense;
+import ml.shifu.shifu.dnn.Layer.Dropout;
+import ml.shifu.shifu.dnn.Layer.Layer;
+
+/**
+ * Neural network trainer
+ */
+public class DNNTrainerTF extends AbstractTrainer {
+
+     private static final Logger LOG = LoggerFactory.getLogger(DNNTrainerTF.class);
+    
+    /**
+     * Convergence judger instance for convergence criteria checking.
+     */
+    private String select_status;
+    
+    public DNNTrainerTF(ModelConfig modelConfig, int trainerID, Boolean dryRun, String select_status) {
+        super(modelConfig, trainerID, dryRun);
+        this.select_status = select_status;
+    }
+
+    private Layer last_layer;
+    private int lastLayerNum;
+    
+    private List<String> buildNetworkStep() throws Exception {
+    	List<String> sb = new ArrayList<String>();
+    	//addCommon();
+    	sb.add("global_step = tf.Variable(0, name='global_step', trainable=False)");
+    	sb.addAll(addInputLayer(null));
+    	List<String> layer_names = (List<String>) modelConfig.getParams().get("LayerName");
+    	List<String> activation = (List<String>) modelConfig.getParams().get("ActivationFunc");
+    	List<Integer> hidden_layer_nodes = (List<Integer>) modelConfig.getParams().get("NumHiddenNodes");
+    	List<String> kernel_initializers = (List<String>) modelConfig.getParams().get("KernelInitializers");
+    	List<String> bias_initializers = (List<String>) modelConfig.getParams().get("BiasInitializers");
+    	List<Double> dropout_rate = (List<Double>)modelConfig.getParams().get("DropoutRate");
+    	String loss = (String)modelConfig.getParams().get("Loss");
+    	String optimizer = (String)modelConfig.getParams().get("Optimizer");
+    	double learningRate = (Double)modelConfig.getParams().get("LearningRate");
+    	if(layer_names.size() != 0 && (layer_names.size() != activation.size() || layer_names.size() != hidden_layer_nodes.size()
+    			|| layer_names.size() != kernel_initializers.size() || layer_names.size() != bias_initializers.size())) {
+            throw new RuntimeException(
+                    "the number of layer do not equal to some of the parameters");
+        }
+    	Layer layer;
+    	Initializer kernel_ini;
+    	Initializer bias_ini;
+    	for(int i = 0; i < layer_names.size(); i++) {
+    		String layer_name = layer_names.get(i);
+    		if(layer_name.equalsIgnoreCase("dense")) {
+    			if(bias_initializers.get(i).equalsIgnoreCase(InitializerCatagory.Constant.name())) {
+    				bias_ini = new Constant();
+    			}else if(bias_initializers.get(i).equalsIgnoreCase(InitializerCatagory.RandomUniform.name())) {
+    				bias_ini = new RandomUniform();
+    			}else if(bias_initializers.get(i).equalsIgnoreCase(InitializerCatagory.RandomNormal.name())){
+    				bias_ini = new RandomNormal();
+    			}else {
+    				bias_ini = null;
+    			}
+    			if(kernel_initializers.get(i).equalsIgnoreCase(InitializerCatagory.Constant.name())) {
+    				kernel_ini = new Constant();
+    			}else if(kernel_initializers.get(i).equalsIgnoreCase(InitializerCatagory.RandomUniform.name())) {
+    				kernel_ini = new RandomUniform();
+    			}else if(kernel_initializers.get(i).equalsIgnoreCase(InitializerCatagory.RandomNormal.name())){
+    				kernel_ini = new RandomNormal();
+    			}else {
+    				kernel_ini = null;
+    			}
+    			if(bias_ini != null && kernel_ini != null)
+    				layer = new Dense(hidden_layer_nodes.get(i), ActivationCatagory.valueOf(activation.get(i)),
+    						kernel_ini,bias_ini);
+    			else if(bias_ini != null && kernel_ini == null) {
+    				layer = new Dense(hidden_layer_nodes.get(i), ActivationCatagory.valueOf(activation.get(i)),
+    						new RandomNormal());
+    			}else if(bias_ini == null && kernel_ini != null) {
+    				layer = new Dense(hidden_layer_nodes.get(i), ActivationCatagory.valueOf(activation.get(i)),
+    						kernel_ini);
+    			}else {
+    				layer = new Dense(hidden_layer_nodes.get(i), ActivationCatagory.valueOf(activation.get(i)));
+    			}
+    						
+    			
+    		}else if(layer_name.equalsIgnoreCase("dropout")) {
+    			layer = new Dropout(dropout_rate.get(i));
+    		}else {
+    			throw new RuntimeException("Not Support Layer Catagory");
+    		}
+    		sb.addAll(addHiddenLayer(layer));
+    		
+    	}
+    	sb.addAll(addLoss(loss));
+    	sb.addAll(addOptimizer(optimizer, learningRate));
+    	//addOutputLayer();
+		
+		return sb;
+    }
+    //hinge没做
+    private List<String> addLoss(String loss) {
+    	List<String> sb = new ArrayList<String>();
+    	String y_ = this.last_layer.getName() + "_outac";
+    	if (loss.equalsIgnoreCase("squared")) {
+    		sb.add(String.format("loss = tf.losses.mean_squared_error(y, %s)", y_));
+    	}else if(loss.equalsIgnoreCase("absolute")) {
+    		sb.add(String.format("loss = tf.losses.absolute_difference(y, %s)", y_));
+    	}else if(loss.equalsIgnoreCase("hinge")) {
+    		sb.add(String.format("loss = tf.losses.hinge_loss(y, %s)", y_));
+    	}else if(loss.equalsIgnoreCase("log")) {
+    		sb.add(String.format("loss = tf.losses.log_loss(y, %f)", y_));
+    	}
+    	return sb;
+    }
+    private List<String> addOptimizer(String optimizer,double rate){
+    	List<String> sb = new ArrayList<String>();
+    	if (optimizer.equalsIgnoreCase("sgd")) {
+    		sb.add(String.format("train_step = tf.train.GradientDescentOptimizer(%f).minimize(loss,global_step=global_step)", rate));
+    	}else if(optimizer.equalsIgnoreCase("adam")) {
+    		sb.add(String.format("train_step = tf.train.AdamOptimizer(%f).minimize(loss,global_step=global_step)", rate));
+    	}else if(optimizer.equalsIgnoreCase("adamgrad")) {
+    		sb.add(String.format("train_step = tf.train.AdagradOptimizer(%f).minimize(loss,global_step=global_step)", rate));
+    	}
+    	return sb;
+    }
+    public List<String> addHiddenLayer(Layer layer) throws Exception {
+    	List<String> sb = new ArrayList<String>();
+    	String layerName = layer.getName();
+    	if(layer.getLayerCatagory().equals(LayerCatagory.Dense)){
+    		ActivationCatagory ac = ((Dense)layer).getActivationCatagory();
+    		int units = ((Dense)layer).getUnits();
+    		Initializer k = ((Dense)layer).getKernelInitializer();
+    		Initializer b = ((Dense)layer).getBiasInitializer();
+    		sb.addAll(addInitializer(null, layerName, units, k, "w"));
+    		sb.addAll(addInitializer(null,layerName, units, k, "b"));
+    		//params.put("units", ((Dense)layer).getUnits());
+		if (this.last_layer != null)
+    			sb.add(String.format("%s_out =  tf.nn.xw_plus_b(%s_outac, %s_w ,%s_b)\n", layerName, this.last_layer.getName(),layerName,  layerName));
+    		else
+			
+    			sb.add(String.format("%s_out = tf.nn.xw_plus_b(x, %s_w, %s_b)", layerName, layerName,  layerName));
+		if (ac.equals(ActivationCatagory.sigmoid)) {
+    			sb.add(String.format("%s_outac = tf.nn.sigmoid(%s_out)", layerName, layerName));
+    		}else if(ac.equals(ActivationCatagory.softmax)) {
+    			sb.add(String.format("%s_outac = tf.nn.softmax(%s_out)", layerName, layerName));
+    		}else if(ac.equals(ActivationCatagory.tanh)) {
+    			sb.add(String.format("%s_outac = tf.nn.tanh(%s_out)", layerName, layerName));
+    		}else if(ac.equals(ActivationCatagory.relu)) {
+    			sb.add(String.format("%s_outac = tf.nn.relu(%s_out)", layerName, layerName));
+    		}else if(ac.equals(ActivationCatagory.linear)) {
+    			sb.add(String.format("%s_outac = %s_out\n", layerName, layerName));
+    		}
+    		this.last_layer = layer;
+    		this.lastLayerNum = units;
+    	}else if(layer.getLayerCatagory().equals(LayerCatagory.Dropout)) {
+    		double rate = ((Dropout)layer).getRate();
+    		sb.add(String.format("%s_outac = tf.nn.dropout(%s_outac, %f)", layerName, this.last_layer.getName(), rate));
+    		this.last_layer = layer;
+    	}
+    	return sb;
+    }
+    private List<String> addInitializer(String deviceName, String layerName, int layerNum ,Initializer ini, String wORb){
+    	List<String> sb = new ArrayList<String>();
+    	String varName = layerName + '_' + wORb;
+    	
+    	if(ini.getInitializerCatagory().equals(InitializerCatagory.Constant)) {
+    		double val = ((Constant)ini).getConstant();
+    		if (wORb == "w")
+    			sb.add(String.format("%s = tf.Variable(tf.constant(%f,shape=[%d, %d]), name='%s')", varName, val, 
+    					this.lastLayerNum, layerNum,  varName));
+    		else
+    			sb.add(String.format("%s = tf.Variable(tf.constant(%f, shape=[%d]), name='%s')", varName, val, layerNum,  
+    					 varName));
+    		
+    	}else if(ini.getInitializerCatagory().equals(InitializerCatagory.RandomNormal)) {
+    		double mean = ((RandomNormal)ini).getMean();
+    		double stddev = ((RandomNormal)ini).getStddev();
+    		if (wORb == "w")
+    			sb.add(String.format("%s = tf.Variable(tf.truncated_normal([%d, %d], mean=%f, stddev=%f), name='%s')", varName, 
+    					this.lastLayerNum, layerNum, mean, stddev,  varName));
+    		else
+    			sb.add(String.format("%s = tf.Variable(tf.truncated_normal([%d], mean=%f, stddev=%f), name='%s')", varName, layerNum,
+    					mean, stddev, varName));
+    	}else if(ini.getInitializerCatagory().equals(InitializerCatagory.RandomUniform)) {
+    		double minVal = ((RandomUniform)ini).getMinVal();
+    		double maxVal = ((RandomUniform)ini).getMaxVal();
+    		if (wORb == "w")
+    			sb.add(String.format("%s = tf.Variable(tf.random_uniform([%d, %d], minVal=%f, maxVal=%f), name='%s')", varName, this.lastLayerNum, 
+    					layerNum,minVal, maxVal, varName));
+    		else
+    			sb.add(String.format("%s = tf.Variable(tf.random_uniform([%d], minVal=%f, maxVal=%f), name='%s')", varName, layerNum, minVal, 
+    					maxVal, varName));
+    	}
+    	if (deviceName == null) {
+    		;
+    	}else {
+    		sb.set(0, "\t"+sb.get(0));
+    		sb.add(0, "with tf.device(" + deviceName + "):");
+    	}
+    	return sb;
+    }
+    private List<String> addInputLayer(String deviceName){
+    	List<String> sb = new ArrayList<String>();
+    	int columnNumsX = 0;
+    	int columnNumsY = 0;
+    	for(Character c:select_status.toCharArray()) {
+    		if(c.equals('T')) {
+    			columnNumsX++;
+    		}else if(c.equals('N')) {
+    			columnNumsY++;
+    		}
+    	}
+    	String x = String.format("x = tf.placeholder(tf.float32, [None, %d])", columnNumsX);
+    	String y = String.format("y = tf.placeholder(tf.float32, [None, %d])", columnNumsY);
+    	
+    	//StringBuilder sb = new StringBuilder();
+    	if (deviceName == null) {
+    		sb.add(x);
+    		sb.add(y);
+    	}else {
+    		sb.add("with tf.device(" + deviceName + "):");
+	    	sb.add("\t" + x);
+	    	sb.add("\t" + y); 
+    	}
+    	//this.lastLayerNum = new Integer(columnNumsX).toString();
+    	this.lastLayerNum = columnNumsX;
+     	return sb;
+    }
+    private List<String> addTrainStep(){
+    	List<String> sb = new ArrayList<String>();
+    	sb.add("init_op = tf.global_variables_initializer()");
+    	//sb.add("train_dir = tempfile.mkdtemp()\n");
+    	sb.add("sv = tf.train.Supervisor(is_chief=is_chief, logdir='./tmp/train_logs', init_op=init_op, recovery_wait_secs=1, global_step=global_step)");
+    	sb.add("if is_chief:");
+			sb.add("\tprint('Worker %d: Initailizing session...' % FLAGS.task_index)");
+		sb.add("else:"); 
+			sb.add("\tprint('Worker %d: Waiting for session to be initaialized...' % FLAGS.task_index)"); 
+		sb.add("sess = sv.prepare_or_wait_for_session(server.target)");
+		sb.add("print('Worker %d: Session initialization  complete.' % FLAGS.task_index)"); 
+		sb.add("time_begin = time.time()");
+		sb.add("print('Traing begins @ %f' % time_begin)");
+		//sb.add("local_step = 0"); 
+		//sb.add("while True:"); 
+		//sb.add("\tbatch_xs, batch_ys = mnist.train.next_batch(FLAGS.batch_size)\n"); 
+		//sb.add("\ttrain_feed = {x: batch_xs, y_: batch_ys}\n");  
+		sb.add("_, step = sess.run([train_step, global_step], feed_dict={x:features, y:labels})"); 
+		//	sb.add("\tlocal_step += 1");
+		sb.add("now = time.time()"); 
+		sb.add("print('%f: Worker %d: dome (global step:%d)' % (now, FLAGS.task_index, step))"); 
+		//	sb.add("\tif step >= FLAGS.train_steps:");
+		//		sb.add("\t\tbreak");
+		sb.add("time_end = time.time()"); 
+		sb.add("print('Training ends @ %f' % time_end)"); 
+		sb.add("train_time = time_end - time_begin");
+		sb.add("print('Training elapsed time:%f s' % train_time)");
+    	return sb;
+    }
+    
+    private List<String> addClusterStep(){
+    	//num_worker = len(worker_spec)
+    	List<String> sb = new ArrayList<String>();
+    	
+    	
+    	sb.add("cluster = tf.train.ClusterSpec({'ps': ps_spec, 'worker': worker_spec})");
+    	sb.add("server = tf.train.Server(cluster, job_name=FLAGS.job_name, task_index=FLAGS.task_index)");
+    	sb.add("if FLAGS.job_name == 'ps': server.join()");
+
+        sb.add("is_chief = (FLAGS.task_index == 0)");
+    
+        sb.add("with tf.device(tf.train.replica_device_setter(cluster=cluster)):");
+        return sb;
+    }
+    private List<String> addParametersStep(){
+    	List<String> sb = new ArrayList<String>();
+    	sb.add("import tensorflow as tf");
+    	sb.add("import time");
+    	sb.add("import pandas as pd");
+    	//sb.add("from hdfs3 import HDFileSystem");
+    	//sb.add("from hdfs.ext.kerberos import KerberosClient");
+    	sb.add("import os");
+    	//sb.add("print(os.listdir('.'))");
+    	sb.add("import numpy as np");
+    	sb.add("import gzip");
+		sb.add("import io");
+    	sb.add("flags = tf.app.flags");	
+    	sb.add("flags.DEFINE_string('ps_hosts', None, 'Comma-separated list of hostname:port pairs')");
+    	sb.add("flags.DEFINE_string('worker_hosts', None,'Comma-separated list of hostname:port pairs')");
+    	sb.add("flags.DEFINE_string('job_name', None, 'job name: worker or ps')");
+    	sb.add("flags.DEFINE_integer('task_index', None, 'Index of task within the job')");
+    	sb.add("flags.DEFINE_string('name_node', None, 'NameNode')");
+    	sb.add("flags.DEFINE_integer('node_nums', None, 'NameNode')");
+    	//sb.add(String.format("flags.DEFINE_float('learning_rate', %f, 'Learning rate')\n", 
+    	//		(Double)this.modelConfig.getParams().get("LearningRate")));
+    	sb.add(String.format("flags.DEFINE_integer('train_steps', %d, 'Number of training steps to perform')"
+    			, modelConfig.getNumTrainEpochs()));
+    	//FileSystem fs = new FileSystem(new Configuration());
+    	try {
+			sb.add(String.format("flags.DEFINE_string('data_dir', '%s', 'Directory  for storing mnist data')",
+					pathFinder.getNormalizedDataPath().substring(FileSystem.get(new Configuration()).getHomeDirectory().toString().length())));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	sb.add("flags.DEFINE_string('ip_address_dir', '/shifu_tmp/', 'syn the ip_address of every worker')");
+    	sb.add("FLAGS = flags.FLAGS");
+    	sb.add("def main(unused_argv):");
+    	return sb;
+    }
+    private List<String> readDataStep(){
+    	List<String> sb = new ArrayList<String>();
+    	List<Integer> featureCol = new ArrayList<Integer>();
+    	List<Integer> targetCol = new ArrayList<Integer>();
+    	for(int i = 0; i < select_status.split(",").length; i++) {
+    		if(select_status.toCharArray()[2*i] == 'T') {
+    			featureCol.add(i);
+    		}else if(select_status.toCharArray()[2*i] == 'N') {
+    			targetCol.add(i);
+    		}
+    	}
+    	
+    	
+    	//sb.add("import socket");
+    	//sb.add("import os");
+    	/*
+    	sb.add("f = os.popen('ifconfig eth0 | grep \"inet\\ addr\" | cut -d: -f2 | cut -d\" \" -f1')");
+    	sb.add("ip = f.read().strip()");
+    	sb.add("if FLAGS.job_name == 'ps':");
+    		sb.add("\timport getpass");
+    		sb.add("\tusername = getpass.getuser()");
+    		sb.add("\tos.popen('hadoop fs -touchz /user/'+username+'/'+FLAGS.data_dir+'/master-'+username+'-'+'-'.join(ip.split('.'))+'-22222.ip')");
+    	sb.add("else:");
+    		sb.add("\twhile not [file for file in client_hdfs.list(FLAGS.data_dir) if file.startswith('master')]:");
+    			sb.add("\t\ttime.sleep(2)");
+    		sb.add("\tusername =  [file for file in client_hdfs.list(FLAGS.data_dir) if file.startswith('master')][0].split('-')[1]");
+    		sb.add("\tos.popen('hadoop fs -touchz /user/'+username+'/'+FLAGS.data_dir+'/'+'-'.join(ip.split('.'))+'-22222.ip')");
+    	//sb.add("count_ip = 0");
+    	 */
+    	//sb.add("count_file = 0");
+    	//sb.add("hdfs = HDFileSystem(host='lvshdc2en0005.lvs.paypal.com', port=8020, token='./container_tokens', user='website')");
+    	sb.add("counter = 0");
+    	sb.add("while not os.path.exists('ipz') and counter < 3:");
+    	sb.add("\ttime.sleep(60)");
+    	sb.add("\tcounter += 1");
+    	sb.add("if counter == 3: exit(-1)");
+    	sb.add("import re");
+    	sb.add("ip = re.findall('10\\.\\d+?\\.\\d+?\\.\\d+',os.popen('ifconfig').read().strip())[0]");
+    	sb.add("file_names = list()");
+    	//sb.add("for file in hdfs.list('shifu_tmp/'):");
+    	//	sb.add("\tif file.endswith('.ip'):");
+    	//		sb.add("\t\tfile = file.strip('.ip').split('_')");
+    	//		sb.add("\t\tfile_names.append('.'.join(file[:-1])+':'+file[-1])");
+    	//sb.add("if os.path.exists(./ips):");
+    	//sb.add("\tall = open('./ips').readline().strip().split(',')");
+    	//sb.add("\tFLAGS.ps_hosts=all[0]");
+    	//sb.add("\tFLAGS.worker_hosts=','.join(all[1:])");
+    	
+    	
+    	sb.add("with open('ipz', 'r') as f:");
+    		sb.add("\tfile_names = f.readline().strip().split(',')");
+    	sb.add("ps_spec = list([file_names[0]])");
+    	sb.add("worker_spec = file_names[1:]");
+    	sb.add("print(ps_spec)");
+    	sb.add("print(worker_spec)");
+    	sb.add("if ip == ps_spec[0].split(':')[0]:");
+    	sb.add("\tFLAGS.job_name = 'ps'");
+    	sb.add("\tFLAGS.task_index = 0");
+    	sb.add("else:");
+    	sb.add("\tFLAGS.job_name = 'worker'");
+    	sb.add("\tFLAGS.task_index = list([i.split(':')[0] for i in worker_spec]).index(ip)");
+    	sb.add("count_file = len([1 for file in os.listdir('.') if file.endswith('.gz')])");
+    	//sb.add("while not [file for file in client_hdfs.list(FLAGS.data_dir) if file.endswith('.ipg')]:");
+    	//sb.add("\tcount_ip = 0");
+    	//	sb.add("\ttime.sleep(2)");
+    	sb.add("count_ip = len(worker_spec)");
+    	//sb.add("FLAGS.ps_hosts = ','.join(['.'.join(file.strip('.ip').split('-')[2:6]) + ':' + file.strip('.ip').split('-')[-1]"
+    	//		+ " for file in client_hdfs.list(FLAGS.data_dir) if file.startswith('master')])");
+    	//sb.add("FLAGS.worker_hosts = ','.join(['.'.join(file.strip('.ip').split('-')[0:4]) + ':' + file.strip('.ip').split('-')[-1] "
+    	//		+ "for file in client_hdfs.list(FLAGS.data_dir) if file.endswith('.ip') and not file.startswith('master')])");
+    	//sb.add("if count_ip <= count_file and FLAGS.job_name != 'ps':");
+    	//	sb.add("\tdata_parts = [i*count_ip+FLAGS.task_index for i in range(count_file // count_ip+1) if i*count_ip+FLAGS.task_index < count_file]");
+    	sb.add("data = pd.DataFrame()");
+    	//	sb.add("\tfor i in data_parts:");
+    	//		sb.add("\t\twith hdfs.open(FLAGS.data_dir+'/'+'part'+str(i)+'.gz', 'r') as reader:");
+    	//			sb.add("\t\t\treader=gzip.GzipFile(fileobj=io.BytesIO(reader.read()))");
+    	sb.add("if FLAGS.job_name == 'worker':");
+    		sb.add("\tfor file in os.listdir('.'):");
+    			sb.add("\t\tif file.endswith('.gz'):");
+    				sb.add("\t\t\ttmp_data = pd.read_csv(file, sep='|',compression='gzip', header=None, dtype=np.float32)");
+    				sb.add("\t\t\tdata = pd.concat([tmp_data,data])");
+    		sb.add("\tif len(data) == 0:exit(-1)");
+    				//sb.add("\t\t\tprint('Loading Data File'+ str(index))");
+    		sb.add(String.format("\tfeatures = data[%s].values", featureCol.toString()));
+    		sb.add(String.format("\tlabels = data[%s].values", targetCol.toString()));
+    	
+    		
+    	return sb;
+    }
+    private List<String> addRunStep(){
+    	List<String> sb = new ArrayList<String>();
+    
+    	sb.add("if __name__ == '__main__':tf.app.run()");
+    	return sb;
+    }
+    
+    private List<String> makeScript() throws Exception{
+    	List<String> temp;
+    	List<String> sb = new ArrayList<String>();
+    	sb.addAll(addParametersStep());
+    	temp = readDataStep();
+    	for(String s:temp)
+    		sb.add("\t" + s);
+    	temp = addClusterStep();
+    	for(String s : temp) {
+    		sb.add("\t" + s);
+    	}
+    	
+    	temp = buildNetworkStep();
+    	for(String s : temp) {
+    		sb.add("\t\t" + s);
+    	}
+    	temp = addTrainStep();
+    	for(String s : temp) {
+    		sb.add("\t\t" + s);
+    	}
+    	sb.add("\tsess.close()");
+    	sb.addAll(addRunStep());
+    	return sb;
+    }
+    @Override
+    public double train() throws IOException {
+    	File models = new File("models");
+        FileUtils.forceMkdir(models);
+    	try {
+    		List<String> tmp = this.makeScript();
+    		Path file = Paths.get("./models/script.py");
+    		Files.write(file, tmp, Charset.forName("UTF-8"));
+    		LOG.info("Successfully generate tensorflow script in models/script.py!");
+    		//String kerasScriptPath = Environment.getProperty(Environment.SHIFU_HOME) + "/scripts/train.py";
+    		//KerasExecutor.getExecutor().submitJob(modelConfig, kerasScriptPath, 
+    		//		SourceType.HDFS, pathFinder, "./models/model0.dnn", select_status);
+    		
+    	}catch(Exception e) {
+    		throw new IOException(e.getMessage().toString());
+    	}
+        return 0;
+    }
+
+    //public DNNNetwork getNetwork() {
+    //    return network;
+    //}
+
+    
+
+    /**
+     * @param network
+     *            the network to set
+     */
+    //public void setNetwork(DNNNetwork network) {
+        //this.network = network;
+    //}
+
+    
+
+    
+
+    
+}
+
+   
+    

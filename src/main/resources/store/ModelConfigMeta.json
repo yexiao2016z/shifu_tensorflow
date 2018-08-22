@@ -1,0 +1,1013 @@
+[
+    {
+        "group" : "basic",
+        "metaList": [
+            {
+                "name": "name",
+                "type": "text",
+                "directive": "input",
+                "minLength": 1
+            }, {
+                "name": "author",
+                "type": "text",
+                "directive": "input",
+                "minLength": 0
+            }, {
+                "name": "description",
+                "type": "text",
+                "directive": "input"
+            }, {
+                "name": "runMode",
+                "type": "text",
+                "directive": "select",
+                "defval" : "local",
+                "options": [ 
+                    {"label":"local mode", "value":"local"},
+                    {"label":"mapred mode", "value":"mapred"},
+                    {"label":"distributed/mapred mode", "value":"dist"},
+					{"label":"local mode2", "value":"local_keras"}
+                ]
+            }, {
+                "name" : "version",
+                "type" : "text",
+                "directive": "input"
+            }, {
+                "name": "postTrainOn",
+                "type" : "boolean",
+                "directive": "checkbox"
+            }, {
+                "name": "customPaths",
+                "type": "map",
+                "directive": "input",
+                "element": [
+                    {
+                        "name" : "hdfsModelSetPath",
+                        "type" : "text",
+                        "directive": "input"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "group" : "dataSet",
+        "metaList": [
+            {
+                "name": "source",
+                "type": "text",
+                "directive": "select",
+                "defval": "LOCAL",
+                "options": [ 
+                    {"label": "hdfs", "value":"HDFS"},
+                    {"label": "local", "value":"LOCAL"},
+                    {"label": "s3", "value":"S3"}
+                ]
+            }, {
+                "name": "dataPath",
+                "type": "text",
+                "directive": "input"
+            }, {
+                "name": "validationDataPath",
+                "type": "text",
+                "directive": "input"
+            }, {
+                "name": "dataDelimiter",
+                "type": "text",
+                "directive": "input",
+                "defval": "|",
+                "maxLength": 20,
+                "minLength": 1
+            }, {
+                "name": "headerPath",
+                "type": "text",
+                "directive": "input"
+            }, {
+                "name": "headerDelimiter",
+                "type": "text",
+                "directive": "input",
+                "defval": "|"
+            }, {
+                "name": "filterExpressions",
+                "type": "text",
+                "directive": "input"
+            }, {
+                "name": "weightColumnName",
+                "type": "text",
+                "directive": "input"
+            }, {
+                "name": "targetColumnName",
+                "type": "text",
+                "directive": "input"
+            }, {
+                "name": "posTags",
+                "type" : "list",
+                "directive": "input",
+                "elementType" : "text",
+                "element" : [ 
+                    {
+                        "name" : "dummy",
+                        "type" : "text",
+                        "directive": "input"       
+                    }
+                ]
+            }, {
+                "name": "negTags",
+                "type" : "list",
+                "directive": "input",
+                "elementType" : "text",
+                "element" : [ 
+                    {
+                        "name" : "dummy",
+                        "type" : "text",
+                        "directive": "input"       
+                    }
+                ]
+            }, {
+                "name": "missingOrInvalidValues",
+                "type" : "list",
+                "directive": "input",
+                "elementType" : "text",
+                "element" : [ 
+                    {
+                        "name" : "dummy",
+                        "type" : "text",
+                        "directive": "input"       
+                    }
+                ]
+            }, {
+                "name": "metaColumnNameFile",
+                "type" : "text",
+                "directive": "input"
+            }, {
+                "name": "autoType",
+                "type" : "boolean",
+                "directive": "checkbox"
+            }, {
+                "name": "autoTypeThreshold",
+                "type" : "number",
+                "directive": "input"
+            }, {
+                "name": "hybridColumnNameFile",
+                "type" : "text",
+                "directive": "input"
+            }, {
+                "name": "segExpressionFile",
+                "type" : "text",
+                "directive": "input"
+            }, {
+                "name": "categoricalColumnNameFile",
+                "type" : "text",
+                "directive": "input"
+            }
+        ]
+    },
+    {
+        "group" : "stats",
+        "metaList": [
+            {
+                "name": "maxNumBin",
+                "type": "integer",
+                "directive": "input",
+                "defval" : 10
+            }, {
+                "name": "cateMaxNumBin",
+                "type": "integer",
+                "directive": "input",
+                "defval" : -1
+            }, {
+                "name": "binningMethod",
+                "type": "text",
+                "directive": "select",
+                "options": [
+                    {"label": "Equal Negative", "value":"EqualNegative"},
+                    {"label": "Equal Positive", "value":"EqualPositive"},
+                    {"label": "Equal Total", "value":"EqualTotal"},
+                    {"label": "Equal Interval", "value":"EqualInterval"},
+                    {"label": "Weight Equal Negative", "value":"WeightEqualNegative"},
+                    {"label": "Weight Equal Positive", "value":"WeightEqualPositive"},
+                    {"label": "Weight Equal Total", "value":"WeightEqualTotal"},
+                    {"label": "Weight Equal Interval", "value":"WeightEqualInterval"}
+                ]
+            }, {
+                "name": "sampleRate",
+                "type": "number",
+                "directive": "input",
+                "defval" : 0.8
+            }, {
+                "name": "sampleNegOnly",
+                "type": "boolean",
+                "directive": "checkbox",
+                "defval" : false
+            }, {
+                "name": "numericalValueThreshold",
+                "type": "number",
+                "directive": "input",
+                "defval" : 1000000.0
+            }, {
+                "name": "binningAutoTypeEnable",
+                "type": "boolean",
+                "directive": "checkbod",
+                "defval" : false
+            }, {
+                "name": "binningAutoTypeThreshold",
+                "type": "integer",
+                "directive": "input",
+                "defval" : 5
+            }, {
+                "name": "binningMergeEnable",
+                "type": "boolean",
+                "directive": "checkbox",
+                "defval" : true
+            }, {
+                "name": "binningAlgorithm",
+                "type": "text",
+                "directive": "select",
+                "options": [
+                    {"label": "Native", "value":"Native"},
+                    {"label": "SPDTI", "value": "SPDTI"},
+                    {"label": "SPDT", "value": "SPDT"},
+                    {"label": "MunroPat", "value": "MunroPat"},
+                    {"label": "MunroPatI", "value": "MunroPatI"},
+                    {"label": "Dynamic Binning", "value":"DynamicBinning"}
+                ]
+            }, {
+                "name": "psiColumnName",
+                "type": "text",
+                "directive": "input",
+                "defval" : ""
+            }
+        ]
+    },
+    {
+        "group" : "varSelect",
+        "metaList": [
+            {
+                "name": "forceEnable",
+                "type": "boolean",
+                "directive": "checkbox",
+                "defval" : true
+            }, {
+                "name": "forceSelectColumnNameFile",
+                "type" : "text",
+                "directive": "input"
+            }, {
+                "name": "candidateColumnNameFile",
+                "type" : "text",
+                "directive": "input"
+            }, {
+                "name": "forceRemoveColumnNameFile",
+                "type" : "text",
+                "directive": "input"
+            }, {
+                "name": "filterEnable",
+                "type": "boolean",
+                "directive": "checkbox",
+                "defval" : true
+            }, {
+                "name": "filterNum",
+                "type": "integer",
+                "directive": "input"
+            }, {
+                "name": "filterOutRatio",
+                "type": "number",
+                "directive": "input",
+                "defval" : 0.05
+            }, {
+                "name": "epsilons",
+                "type": "numberarray",
+                "directive": "input"
+            }, {
+                "name": "filterBy",
+                "type": "text",
+                "directive": "select",
+                "options": [
+                    {"label": "KS", "value":"ks"},
+                    {"label": "Information Value", "value":"iv"},
+                    {"label": "Mixed KS and IV", "value":"mix"},
+                    {"label": "Epsilon-nondominated sort", "value":"pareto"},
+                    {"label": "Sensitivity comparing with temporarily trained model", "value":"SE"},
+                    {"label": "Sensitivity comparing with training data target", "value":"ST"},
+                    {"label": "Voted", "value":"V"},                  
+                    {"label": "Feature Importance(only valid for tree models)", "value":"FI"}                    
+                ]
+            }, {
+                "name": "votedVariablesSelection",
+                "type": "boolean",
+                "directive": "checkbox",
+                "defval": false
+            }, {
+                "name": "autoFilterEnable",
+                "type": "boolean",
+                "directive": "checkbox",
+                "defval" : true
+            }, {
+                "name": "missingRateThreshold",
+                "type": "number",
+                "directive": "input",
+                "defval" : 0.5
+            }, {
+                "name": "correlationThreshold",
+                "type": "number",
+                "directive": "input",
+                "defval" : 1
+            }, {
+                "name": "minIvThreshold",
+                "type": "number",
+                "directive": "input",
+                "defval" : 0
+            }, {
+                "name": "minKsThreshold",
+                "type": "number",
+                "directive": "input",
+                "defval" : 0
+            }, {
+                "name": "postCorrelationMetric",
+                "type": "text",
+                "directive": "select",
+                "options": [
+                    {"label": "SE", "value":"KS"},
+                    {"label": "IV", "value":"IV"},
+                    {"label": "Sensitivity Analysis", "value":"SE"}
+                ]
+            }, {
+                "name": "params",
+                "type": "map",
+                "directive": "input",
+                "element": [
+                    {
+                      "name" : "worker_sample_rate",
+                      "type" : "number",
+                      "directive": "input",
+                      "defval" : 0.1
+                    }, {
+                      "name" : "population_multiply_cnt",
+                      "type" : "integer",
+                      "directive": "input",
+                      "defval" : 100
+                    }, {
+                      "name" : "population_live_size",
+                      "type" : "integer",
+                      "directive": "input",
+                      "defval" : 500
+                    }, {
+                      "name" : "expect_variable_cnt",
+                      "type" : "integer",
+                      "directive": "input",
+                      "defval" : 300
+                    }, {
+                      "name" : "hybrid_percent",
+                      "type" : "number",
+                      "directive": "input",
+                      "defval" : 60
+                    }, {
+                      "name" : "mutation_percent",
+                      "type" : "number",
+                      "directive": "input",
+                      "defval" : 30
+                    }
+                ]
+            }
+        ]
+    }, 
+    {
+        "group" : "normalize",
+        "metaList" : [
+            {
+                "name": "normType",
+                "type": "text",
+                "directive": "select",
+                "defval" : "ZSCALE",
+                "options": [
+                    {"label":"old zscale mode", "value":"OLD_ZSCALE"},
+                    {"label":"zscale mode", "value":"ZSCALE"},
+                    {"label":"same as zscale mode", "value":"ZSCORE"},
+                    {"label":"woe mode", "value":"WOE"},
+                    {"label":"weight woe mode", "value":"WEIGHT_WOE"},
+                    {"label":"hybrid mode", "value":"HYBRID"},
+                    {"label":"weight hybrid mode", "value":"WEIGHT_HYBRID"},
+                    {"label":"woe zscale mode", "value":"WOE_ZSCALE"},
+                    {"label":"same as woe zscale mode", "value":"WOE_ZSCORE"},
+                    {"label":"weight woe zscale mode", "value":"WEIGHT_WOE_ZSCALE"},
+                    {"label":"same as weight woe zscale mode", "value":"WEIGHT_WOE_ZSCORE"},
+                    {"label":"zscore and onehot for categorical", "value":"ZSCALE_ONEHOT"},
+                    {"label":"Discrete numerical feature in each bin and positive rate for categorical feature", "value":"DISCRETE_ZSCALE"},
+                    {"label":"Discrete numerical feature in each bin and positive rate for categorical feature", "value":"DISCRETE_ZSCORE"}
+                ]
+            }, {
+                "name": "stdDevCutOff",
+                "type": "number",
+                "directive": "input",
+                "defval" : 4.0
+            }, {
+                "name": "sampleRate",
+                "type": "number",
+                "directive": "input",
+                "defval": 0.8
+            }, {
+                "name": "isParquet",
+                "type": "boolean",
+                "directive": "checkbox",
+                "defval": true    
+            }, {
+                "name": "sampleNegOnly",
+                "type": "boolean",
+                "directive": "checkbox",
+                "defval" : false
+            }
+        ]
+    }, {
+        "group" : "train",
+        "metaList": [
+            {
+                "name": "baggingNum",
+                "type": "integer",
+                "directive": "input",
+                "defval" : 5
+            }, {
+                "name": "baggingWithReplacement",
+                "type": "boolean",
+                "directive": "checkbox",
+                "defval": false
+            }, {
+                "name": "baggingSampleRate",
+                "type": "number",
+                "directive": "input",
+                "defval": 0.8
+            }, {
+                "name": "baggingSampleSeed",
+                "type": "integer",
+                "directive": "input",
+                "defval": -1
+            }, {
+                "name": "validSetRate",
+                "type": "number",
+                "directive": "input",
+                "defval": 0.2
+            }, {
+                "name": "sampleNegOnly",
+                "type": "boolean",
+                "directive": "checkbox",
+                "defval" : false
+            }, {
+                "name": "trainOnDisk",
+                "type": "boolean",
+                "directive": "checkbox",
+                "defval": false
+            }, {
+                "name": "numKFold",
+                "type": "integer",
+                "directive": "input",
+                "defval" : -1
+            }, {
+                "name": "fixInitInput",
+                "type": "boolean",
+                "directive": "input",
+                "defval": false
+            }, {
+                "name": "stratifiedSample",
+                "type": "boolean",
+                "directive": "checkbox",
+                "defval": false
+            }, {
+                "name": "numTrainEpochs",
+                "type": "integer",
+                "directive": "input",
+                "defval": 100
+            }, {
+                "name": "convergenceThreshold",
+                "type": "number",
+                "directive": "input",
+                "defval": 0.0
+            }, {
+                "name": "zkServers",
+                "type": "text",
+                "directive": "input",
+                "defval" : ""
+            }, {
+                "name": "epochsPerIteration",
+                "type": "integer",
+                "directive": "input",
+                "defval" : 1
+            }, {
+                "name": "isContinuous",
+                "type": "boolean",
+                "directive": "input",
+                "defval": false
+            }, { 
+                "name": "isCrossOver",
+                "type": "boolean",
+                "directive": "input",
+                "defval": false
+            }, {              
+                "name": "workerThreadCount",
+                "type": "integer",
+                "directive":"input",
+                "defval": 4
+            }, {
+                "name": "multiClassifyMethod",
+                "type": "text",
+                "directive": "select",
+                "defval" : "NONE",
+                "options": [
+                    {"label":"NATIVE", "value":"NATIVE"},
+                    {"label":"ONEVSALL", "value":"ONEVSALL"},
+                    {"label":"ONEVSREST", "value":"ONEVSREST"},
+                    {"label":"ONEVSONE", "value":"ONEVSONE"}
+                ]
+            }, {
+                "name": "upSampleWeight",
+                "type": "number",
+                "directive": "input",
+                "defval": 1.0
+            }, {
+                "name": "algorithm",
+                "type": "text",
+                "directive": "select",
+                "defval": "NN",
+                "options": [
+                    {"label": "Neural Network", "value":"NN"},
+                    {"label": "Logic Regression", "value":"LR"},
+                    {"label": "Support Vector Machine", "value":"SVM"},
+                    {"label": "Decision Tree", "value":"DT"},
+                    {"label": "Random Forest", "value":"RF"},
+                    {"label": "Gradient Boost Decision Tree", "value":"GBT"},
+					{"label": "Deep Neural Network", "value":"DNN"}
+                ]
+            }, {
+                "name": "gridConfigFile",
+                "type": "text",
+                "directive": "input",
+                "defval": ""
+            }, {
+                "name": "params",
+                "type": "map",
+                "directive": "input",
+                "element": [
+                    {
+                        "name" : "NumHiddenLayers",
+                        "type" : "integer",
+                        "directive": "input",
+                        "defval" : 2
+                    }, {
+                        "name" : "ActivationFunc",
+                        "type" : "list",
+                        "directive": "input",
+                        "elementType" : "text",
+                        "element": [ 
+                            {
+                                "name": "dummy",
+                                "type": "text",
+                                "directive": "select",
+                                "defval": "Sigmoid",
+                                "options": [
+                                    {"label": "Sigmoid", "value":"Sigmoid"},
+                                    {"label": "Tanh", "value":"Tanh"},
+                                    {"label": "Log", "value":"Log"},
+                                    {"label": "Sin", "value":"Sin"},
+                                    {"label": "Linear", "value":"Linear"},
+                                    {"label": "ReLU", "value":"ReLU"}
+                                ]
+                            }                            
+                         ]
+                    }, {
+                        "name" : "NumHiddenNodes",
+                        "type" : "list",
+                        "directive": "input",
+                        "elementType" : "integer",
+                        "element": [
+                            {
+                                "name": "dummy",
+                                "type": "integer",
+                                "directive": "input",
+                                "defval": 45
+                            }                            
+                         ]
+                    }, {
+                        "name" : "LearningRate",
+                        "type" : "number",
+                        "directive": "input",
+                        "defval" : 0.1
+                     }, {
+                        "name" : "Momentum",
+                        "type" : "number",
+                        "directive": "input",
+                        "defval" : 0.5
+                     }, {
+                        "name" : "AdamBeta1",
+                        "type" : "number",
+                        "directive": "input",
+                        "defval" : 0.9
+                     }, {
+                        "name" : "AdamBeta2",
+                        "type" : "number",
+                        "directive": "input",
+                        "defval" : 0.999
+                    }, {
+                        "name" : "RegularizedConstant",
+                        "type" : "number",
+                        "directive": "input",
+                        "defval" : 0.0
+                    }, {
+                        "name" : "WeightInitializer",
+                        "type" : "text",
+                        "directive": "select",
+                        "defval" : "default",
+                        "options": [
+                            {"label": "Default", "value":"default"},
+                            {"label": "Gaussian", "value":"gaussian"},
+                            {"label": "Xavier", "value":"Xavier"}
+                        ]
+                    }, {
+                        "name" : "L1orL2",
+                        "type" : "text",
+                        "directive": "input",
+                        "defval" : "NONE"
+                    }, {
+                        "name" : "MaxDepth",
+                        "type" : "integer",
+                        "directive": "input",
+                        "defval" : 10
+                    }, {
+                        "name" : "MaxLeaves",
+                        "type" : "integer",
+                        "directive": "input",
+                        "defval" : -1
+                    }, {
+                        "name" : "MaxBatchSplitSize",
+                        "type" : "integer",
+                        "directive": "input",
+                        "defval" : -1
+                    }, {
+                        "name" : "MinInstancesPerNode",
+                        "type" : "integer",
+                        "directive": "input",
+                        "defval" : 1
+                    }, {
+                        "name" : "MinInfoGain",
+                        "type" : "number",
+                        "directive": "input",
+                        "defval" : 0.0
+                    }, {
+                        "name" : "MaxStatsMemoryMB",
+                        "type" : "integer",
+                        "directive": "input",
+                        "defval" : 512
+                    }, {
+                        "name" : "TreeNum",
+                        "type" : "integer",
+                        "directive": "input",
+                        "defval" : 5
+                    }, {
+                        "name" : "Impurity",
+                        "type" : "text",
+                        "directive": "select",
+                        "defval" : "variance",
+                        "options": [
+                            {"label": "Variance", "value":"variance"},
+                            {"label": "FriedmanMSE", "value":"friedmanmse"},
+                            {"label": "Entropy", "value":"entropy"},
+                            {"label": "Gini", "value":"gini"}
+                        ]
+                    }, {
+                        "name" : "FeatureSubsetStrategy",
+                        "type" : "text",
+                        "directive": "select",
+                        "defval" : "half",
+                        "options": [
+                        ]
+                    }, {
+                        "name" : "EnableEarlyStop",
+                        "type": "boolean",
+                        "directive": "checkbox",
+                        "defval": false
+                    }, {
+                        "name" : "Loss",
+                        "type" : "text",
+                        "directive": "select",
+                        "defval" : "squared",
+                        "options": [
+                            {"label": "Squared", "value":"squared"},
+                            {"label": "HalfGradSquared", "value":"halfgradsquared"},
+                            {"label": "Absolute", "value":"absolute"},
+                            {"label": "Log", "value":"log"},
+                            {"label": "Hinge","value":"hinge"}
+                        ]
+                    }, {
+                        "name" : "LearningDecay",
+                        "type" : "number",
+                        "directive": "input",
+                        "defval" : 0.01
+                    }, {
+                        "name" : "DropoutRate",
+                        "type" : "number",
+                        "directive": "input",
+                        "defval" : 0
+                    }, {
+                        "name" : "MiniBatchs",
+                        "type" : "number",
+                        "directive": "input",
+                        "defval" : 1
+                    }, {
+                        "name" : "ValidationTolerance",
+                        "type" : "number",
+                        "directive": "input",
+                        "defval" : 0
+                    }, {
+                        "name" : "Propagation",
+                        "type" : "text",
+                        "directive": "select",
+                        "defval" : "Q",
+                        "options": [
+                            {"label": "Quick Propagation", "value":"Q"},
+                            {"label": "Back Propagation", "value":"B"},
+                            {"label": "Manhattan Propagation", "value":"M"},
+                            {"label": "Resilient Propagation", "value":"R"},
+                            {"label": "Scaled Conjugate Gradient", "value":"S"},
+                            {"label": "Adam", "value":"Adam"},
+                            {"label": "AdaGrad", "value":"AdaGrad"},
+                            {"label": "RMSProp", "value":"RMSProp"},
+                            {"label": "Nesterov", "value":"Nesterov"},
+                            {"label": "Momentum", "value":"Momentum"}
+                        ]
+                    }, {
+                        "name" : "IsELM",
+                        "type": "boolean",
+                        "directive": "checkbox",
+                        "defval": false
+                    }, {
+                        "name": "GBTSampleWithReplacement",
+                        "type": "boolean",
+                        "directive": "input",
+                        "defval": false
+                    } , {
+                        "name" : "Kernel",
+                        "type" : "text",
+                        "directive": "input",
+                        "defval" : "linear"
+                    } , {
+                        "name" : "Const",
+                        "type" : "number",
+                        "directive": "input",
+                        "defval" : 0.1
+                    }, {
+                        "name" : "Gamma",
+                        "type" : "number",
+                        "directive": "input",
+                        "defval" : 0.1
+                    },	{
+                        "name" : "LayerName",
+                        "type" : "list",
+                        "directive": "input",
+                        "elementType" : "text",
+                        "element": [ 
+                            {
+                                "name": "dummy",
+                                "type": "text",
+                                "directive": "select",
+                                "defval": "dense",
+                                "options": [
+                                    {"label": "Dense", "value":"dense"},
+                                    {"label": "Dropout", "value":"dropout"}
+                                ]
+                            }                            
+                         ]
+                    },{
+                        "name" : "KernelInitializers",
+                        "type" : "list",
+                        "directive": "input",
+                        "elementType" : "text",
+                        "element": [
+                            {
+                                "name": "dummy",
+                                "type": "text",
+                                "directive": "select",
+                                "defval": "randomnormal",
+                                "options":[
+                                	{"label":"RandomNormal","value":"randomnormal"},
+                                	{"label":"RandomUniform","value":"randomuniform"},
+                                	{"label":"Constant","value":"constant"}
+                                ]
+                            }                            
+                         ]
+                    },{
+                        "name" : "BiasInitializers",
+                        "type" : "list",
+                        "directive": "input",
+                        "elementType" : "text",
+                        "element": [
+                            {
+                                "name": "dummy",
+                                "type": "text",
+                                "directive": "select",
+                                "defval": "randomnormal",
+                                "options":[
+                                	{"label":"RandomNormal","value":"randomnormal"},
+                                	{"label":"RandomUniform","value":"randomuniform"},
+                                	{"label":"Constant","value":"constant"}
+                                ]
+                            }                            
+                         ]
+                    },{
+						"name" : "Optimizer",
+                        "type" : "text",
+                        "directive": "select",
+                        "defval" : "sgd",
+                        "options": [
+                            {"label": "SGD", "value":"sgd"},
+                            {"label": "Adam", "value":"adam"},
+                            {"label": "AdaGrad", "value":"adagrad"},
+                            {"label": "RMSprop", "value":"rmsprop"},
+                            {"label": "Nadam", "value": "nadam"}
+                        ]
+					}
+                ]
+            }, {
+                "name": "customPaths",
+                "type": "map",
+                "directive": "input",
+                "element": [
+                    {
+                        "name" : "preTrainStatsPath",
+                        "type" : "text",
+                        "directive": "input"
+                    }, {
+                        "name" : "normalizedDataPath",
+                        "type" : "text",
+                        "directive": "input"
+                    }, {
+                        "name" : "normalizedValidationDataPath",
+                        "type" : "text",
+                        "directive": "input"
+                    }, {
+                        "name" : "cleanedDataPath",
+                        "type" : "text",
+                        "directive": "input"
+                    }, {
+                        "name" : "cleanedValidationDataPath",
+                        "type" : "text",
+                        "directive": "input"
+                    }, {
+                        "name" : "selectedRawDataPath",
+                        "type" : "text",
+                        "directive": "input"
+                    }, {
+                        "name" : "trainScoresPath",
+                        "type" : "text",
+                        "directive": "input"
+                    }, {
+                        "name" : "binAvgScorePath",
+                        "type" : "text",
+                        "directive": "input"
+                    }
+                ]
+            }
+        ]
+    }, {
+        "group" : "evals",
+        "metaList" : [
+            {
+                "name": "name",
+                "type": "text",
+                "directive": "input",
+                "minLength": 1
+            }, {
+                "name": "dataSet",
+                "type": "object",
+                "directive": "input",
+                "element" : [
+                    {
+                        "name": "source",
+                        "type": "text",
+                        "directive": "select",
+                        "defval": "LOCAL",
+                        "options": [ 
+                            {"label": "hdfs", "value":"HDFS"},
+                            {"label":"local", "value":"LOCAL"},
+                            {"label":"s3", "value":"S3"}
+                        ]
+                    }, {
+                        "name": "dataPath",
+                        "type": "text",
+                        "directive": "input"
+                    },{
+                        "name": "testDataPath",
+                        "type": "text",
+                        "directive": "input"
+                    }, {
+                        "name": "dataDelimiter",
+                        "type": "text",
+                        "directive": "input",
+                        "defval": "|",
+                        "maxLength": 20,
+                        "minLength": 1
+                    }, {
+                        "name": "headerPath",
+                        "type": "text",
+                        "directive": "input"
+                    }, {
+                        "name": "headerDelimiter",
+                        "type": "text",
+                        "directive": "input",
+                        "defval": "|"
+                    }, {
+                        "name": "filterExpressions",
+                        "type": "text",
+                        "directive": "input"
+                    }, {
+                        "name": "weightColumnName",
+                        "type": "text",
+                        "directive": "input"
+                    }, {
+                        "name": "targetColumnName",
+                        "type": "text",
+                        "directive": "input"
+                    }, {
+                        "name": "posTags",
+                        "type" : "list",
+                        "directive": "input",
+                        "elementType" : "text",
+                        "element" : [ 
+                            {
+                                "name" : "dummy",
+                                "type" : "text",
+                                "directive": "input"       
+                            }
+                        ]
+                    }, {
+                        "name": "negTags",
+                        "type" : "list",
+                        "directive": "input",
+                        "elementType" : "text",
+                        "element" : [ 
+                            {
+                                "name" : "dummy",
+                                "type" : "text",
+                                "directive": "input"       
+                            }
+                        ]
+                    }
+                ]
+            }, {
+                "name" : "performanceBucketNum",
+                "type" : "integer",
+                "directive": "input",
+                "defval" : 10
+             }, {
+                "name" : "scoreScale",
+                "type" : "number",
+                "directive" : "input",
+                "defval" : 1000
+            }, { 
+                "name": "gbtConvertToProb",
+                "type": "boolean",
+                "directive": "input",
+                "defval": true
+             }, {
+                "name" : "gbtScoreConvertStrategy",
+                "type" : "text",
+                "directive": "select",
+                "defval" : "SIGMOID",
+                "options": [
+                    {"label": "RAW", "value":"RAW"},
+                    {"label": "OLD_SIGMOID", "value":"OLD_SIGMOID"},
+                    {"label": "SIGMOID", "value":"SIGMOID"},
+                    {"label": "CUTOFF", "value":"CUTOFF"},
+                    {"label": "HALF_CUTOFF", "value":"HALF_CUTOFF"},
+                    {"label": "MAXMIN", "value":"MAXMIN"}
+                ]
+            }, {
+                "name" : "performanceScoreSelector",
+                "type" : "text",
+                "directive": "input",
+                "defval" : "mean"
+            }, {
+                "name" : "scoreMetaColumnNameFile",
+                "type" : "text",
+                "directive": "input"
+            }, {
+                "name": "customPaths",
+                "type": "map",
+                "directive": "input",
+                "element": [
+                    {
+                        "name" : "modelsPath",
+                        "type" : "text",
+                        "directive": "input"
+                    }, {
+                        "name" : "scorePath",
+                        "type" : "text",
+                        "directive": "input"
+                    }, {
+                        "name" : "confusionMatrixPath",
+                        "type" : "text",
+                        "directive": "input"
+                    }, {
+                        "name" : "performancePath",
+                        "type" : "text",
+                        "directive": "input"
+                    }
+                ]
+            }
+        ]
+    }
+]

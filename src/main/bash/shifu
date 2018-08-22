@@ -1,0 +1,240 @@
+#!/usr/bin/env bash
+
+# Copyright [2012-2014] PayPal Software Foundation
+#  
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#    http://www.apache.org/licenses/LICENSE-2.0
+#  
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# HADOOP_HOME or HADOOP_ROOT
+# 
+# Shifu will check if current hadoop is installed well, if not installed well, please check and configure your HADOOP_HOME
+# or HADOOP_ROOT well.
+
+function sanity_check() {
+    if [ ! -f ModelConfig.json ]; then
+        echo "[Error] This is not a model set folder because no ModelConfig.json found in current folder, please change folder to your model set folder."
+        exit 1
+    fi
+} 
+
+function remove_duplicate_jars_func() {
+    _JARS=`echo $1 | awk -F':' '{for(i=1;i<=NF;i++){a=$i;if(a ~ / /){continue};if(!(a ~ /\.jar$/)){print $i; continue};sub(/.*\//, "", a);sub(/[_-][0-9].*.jar/, "", a); if(!(a in names)){print $i}; names[a]}}' | xargs | sed 's/ /:/g'`
+    echo ${_JARS}
+}
+
+function sync_model_to_hdfs() {
+    PWD="`pwd`"
+    MODELSET_NAME=`basename ${PWD}`
+    hadoop fs -mkdir tmp
+    hadoop fs -mkdir tmp/$MODELSET_NAME
+
+    hadoop fs -rm tmp/${MODELSET_NAME}/ColumnConfig.json
+    hadoop fs -put ModelConfig.json tmp/${MODELSET_NAME}
+    hadoop fs -put ColumnConfig.json tmp/${MODELSET_NAME}
+
+    echo "HDFS synced."
+}
+
+function find_hadoop_root() {
+    # locate HADOOP_ROOT by "which hadoop"
+    HADOOP_CMD_PATH=`which hadoop 2>/dev/null`
+    _status=`echo $?`
+
+    # Check whether hadoop is installed under /usr/bin or not
+    if [ "${HADOOP_CMD_PATH}" == "/usr/bin/hadoop" -a -d /usr/lib/hadoop -a -d /usr/lib/hadoop/bin ]; then
+        HADOOP_ROOT=/usr/lib/hadoop
+    else
+        # Check whether ${HADOOP_CMD_PATH}/../../lib exists or not
+        if [ "${HADOOP_CMD_PATH}" != "" ]; then
+            while [ -L ${HADOOP_CMD_PATH} ]; do
+                HADOOP_CMD_PATH=`readlink ${HADOOP_CMD_PATH}`
+            done
+            if [ -d "`dirname ${HADOOP_CMD_PATH}`/../lib" ]; then
+                HADOOP_ROOT=`dirname ${HADOOP_CMD_PATH}`/..
+            fi
+        fi
+    fi
+
+    # Not find yet, try to locate HADOOP_ROOT by "whereis hadoop"
+    if [ "${HADOOP_ROOT}" == "" ]; then
+        for h_dir in `whereis hadoop 2>/dev/null` ; do
+            if [ -e ${h_dir}/bin/hadoop ]; then
+                HADOOP_ROOT=${h_dir}
+                break
+            fi
+        done
+    fi
+
+    echo ${HADOOP_ROOT}
+}
+
+function find_ld_library_path() {
+    _hadoop_root=$1
+    if [ "${_hadoop_root}" != "" ]; then
+        LINUX_ARCH="i386-32"
+        if [ "`getconf LONG_BIT`" == "64" ]; then
+            LINUX_ARCH="amd64-64"
+        fi
+
+        if [ -d ${_hadoop_root}/lib/native/Linux-${LINUX_ARCH} ] ; then
+            _ld_library_path="${_hadoop_root}/lib/native/Linux-${LINUX_ARCH}:${_hadoop_root}/lib/native"
+        elif [ -d ${_hadoop_root}/lib/native ]; then
+            _ld_library_path="${_hadoop_root}/lib/native"
+        fi
+    fi
+
+    echo ${_ld_library_path}
+}
+
+if [ "${SHIFU_HOME}" == "" ]; then
+    COMMAND=`which $0`
+    if [ -L ${COMMAND} ]; then
+        COMMAND=`readlink ${COMMAND}`
+    fi
+    
+    BIN_DIR=`dirname ${COMMAND}`
+    export SHIFU_HOME="${BIN_DIR}/.."
+    echo "SHIFU_HOME is not set. Using ${BIN_DIR}/.. as SHIFU_HOME"
+fi
+
+SHIFU_OPTS=${JAVA_OPTS:=${SHIFU_OPTS}}
+
+#check SPARK_HOME for shifu spark eval
+if [ "${SPARK_HOME}" != "" ]; then
+   if [ "${SPARK_CONF_DIR}" != "" ]; then
+        SPARK_SUBMIT=`command -v "spark-submit"`
+        if [ "${SPAK_SUBMIT}" == "" ]; then
+            SPARK_SUBMIT="${SPARK_HOME}/bin/spark-submit"
+            SPARK_EVAL_JAR=`find ${SHIFU_HOME}/lib -name "shifu-spark-eval*.jar"`
+            SPARK_CLASSPATH=`find ${SHIFU_HOME}/lib -name "*.jar" | grep -v javadoc | xargs | sed 's/ /,/g'`
+        fi
+   else 
+        echo "SPARK_HOME is not set, please set SPARK_HOME to enable shifu spark eval."
+
+   fi
+fi
+
+cygwin=false
+case "`uname`" in
+    CYGWIN*) cygwin=true;;
+esac
+
+JAVA_OPTIONS=${SHIFU_OPTS:=-server -Xms2G -Xmx4G}
+
+PIG_OPTIONS="${PIG_OPTIONS} -Dmapred.map.tasks.speculative.execution=true"
+PIG_OPTIONS="${PIG_OPTIONS} -Dmapred.reduce.tasks.speculative.execution=true"
+PIG_OPTIONS="${PIG_OPTIONS} -Dpig.tmpfilecompression=true"
+PIG_OPTIONS="${PIG_OPTIONS} -Dpig.tmpfilecompression.codec=lzo"
+PIG_OPTIONS="${PIG_OPTIONS} -Dmapreduce.child.ulimit=2194304"
+PIG_OPTIONS="${PIG_OPTIONS} -Dmapreduce.child.java.opts=-Xmx1G"
+PIG_OPTIONS="${PIG_OPTIONS} -m PigConfig.conf"
+
+CLASSPATH=`find ${SHIFU_HOME}/lib -name "*.jar" | grep -v javadoc | xargs | sed 's/ /:/g'`
+
+# ---------------- HADOOP Environment Detection -----------------------------
+if [ "${HADOOP_ROOT}" == "" ]; then
+    if [ "${HADOOP_HOME}" != "" ]; then # if HADOOP_HOME is set, use it as HADOOP_ROOT
+        HADOOP_ROOT="${HADOOP_HOME}"
+    else
+        HADOOP_ROOT=`find_hadoop_root`
+    fi
+    if [ "${HADOOP_ROOT}" == "" ]; then
+        echo "Warning: no HADOOP_HOME(please check) or hadoop is found, you can only run Shifu in local mode."
+    fi
+fi
+
+if [ -e ${HADOOP_ROOT}/bin/hadoop ]; then
+    HD_CLASSPATH=`${HADOOP_ROOT}/bin/hadoop classpath 2> /dev/null`
+else
+    HD_CLASSPATH=`hadoop classpath 2> /dev/null`
+fi
+
+if [ "${HD_CLASSPATH}" != "" ]; then
+    ## no need add slfloglib because hadoop classpath has
+    CLASSPATH="${HD_CLASSPATH}:${CLASSPATH}"
+else
+   LOG_CLASSPATH=`find ${SHIFU_HOME}/slfloglib -name "*.jar" | grep -v javadoc | xargs | sed 's/ /:/g'`
+   CLASSPATH="${CLASSPATH}:${LOG_CLASSPATH}"
+fi
+
+CLASSPATH=`remove_duplicate_jars_func "${CLASSPATH}"`
+
+# add HADOOP configuration directory if exists
+if [ "${HADOOP_CONF_DIR}" != "" -a -d "${HADOOP_CONF_DIR}" ]; then
+    CLASSPATH="${HADOOP_CONF_DIR}:${CLASSPATH}"
+fi
+CLASSPATH=".:${SHIFU_HOME}/conf:${SHIFU_HOME}/log4jconf:${CLASSPATH}"
+
+LD_LIBRARY_PATH=`find_ld_library_path ${HADOOP_ROOT}`
+
+if ${cygwin}; then
+  CLASSPATH=`cygpath -p -w "${CLASSPATH}"`
+  if [ "${LD_LIBRARY_PATH}" != "" ]; then
+    LD_LIBRARY_PATH=`cygpath -p -w "${LD_LIBRARY_PATH}"`
+  fi
+  export SHIFU_HOME=$(cygpath -w ${SHIFU_HOME})
+fi
+
+export LD_LIBRARY_PATH
+# ---------------- Detection End -------------------------------------------------
+
+CLASS=ml.shifu.shifu.ShifuCLI
+
+COMMAND=$1
+
+# add concurrent gc 
+JAVA_OPTIONS="-server -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=70 ${JAVA_OPTIONS}"
+
+case ${COMMAND} in
+    "modelset")
+        java ${JAVA_OPTIONS} -classpath ${CLASSPATH} ${CLASS} "$@"
+        ;;
+    "varselect"|"varsel")
+        sanity_check
+        java ${JAVA_OPTIONS} -classpath ${CLASSPATH} ${CLASS} "$@"
+        ;;
+    "init"|"stats"|"normalize"|"norm"|"posttrain")
+        sanity_check
+        java ${JAVA_OPTIONS} -classpath ${CLASSPATH} ${CLASS} "$@"
+        ;;
+    "train")
+        sanity_check
+        java ${JAVA_OPTIONS} -classpath ${CLASSPATH} ${CLASS} "$@"
+        ;;
+    "combo")
+        sanity_check
+        java ${JAVA_OPTIONS} -classpath ${CLASSPATH} ${CLASS} "$@"
+        ;;
+    "syncUp")
+        sanity_check
+        java ${JAVA_OPTIONS} -classpath ${CLASSPATH} ${CLASS} "$@"
+        ;;
+    "syncHDFS")
+        sanity_check
+        sync_model_to_hdfs
+        ;;
+    "eval")
+        sanity_check
+        #TODO : to change spark executor instance automaticaly adapted
+        if [ "${SPARK_SUBMIT}" != "" -a "${SHIFU_SPARK_EVAL}" == "TRUE" ]; then
+                ${SPARK_SUBMIT} --class ml.shifu.shifu.spark.eval.ShifuEval --conf spark.executor.instances=200 --conf spark.executor.memory=4g  --conf spark.serializer=org.apache.spark.serializer.KryoSerializer --jars ${SPARK_CLASSPATH} ${SHIFU_HOME}/lib/${SPARK_EVAL_JAR}
+        else 
+                java ${JAVA_OPTIONS} -classpath ${CLASSPATH} ${CLASS} "$@"
+        fi
+        ;;
+    "--help"|"-help"|"-h"|"h"|"help")
+        java ${JAVA_OPTIONS} -classpath ${CLASSPATH} ${CLASS} "$@"
+        ;;
+    *)
+        java ${JAVA_OPTIONS} -classpath ${CLASSPATH} ${CLASS} "$@"
+        ;;
+esac
