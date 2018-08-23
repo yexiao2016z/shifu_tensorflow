@@ -336,8 +336,8 @@ public class ApplicationMaster{
 				command2.append("1>>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout ");
 				command2.append("2>>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr;");
 				commands.add(command2.toString());
-				commands.add("ls -R ./tmp;");
-				commands.add("hadoop fs -put ./tmp/train_logs/*.pbtxt " + fs.getHomeDirectory()+"/shifu_tmp/");
+				//commands.add("ls -R ./tmp;");
+				//commands.add("if [ -f \"./tmp/train_logs/*.pbtxt\"]; then hadoop fs -put ./tmp/train_logs/*.pbtxt; " + fs.getHomeDirectory()+"/shifu_tmp/; fi");
 				ContainerLaunchContext ctx = ContainerLaunchContext.newInstance(
 						localResources, env, commands, null, null, null);
 				ctx.setTokens(setupTokens());

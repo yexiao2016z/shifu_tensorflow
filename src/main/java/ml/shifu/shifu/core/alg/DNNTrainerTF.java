@@ -290,29 +290,66 @@ public class DNNTrainerTF extends AbstractTrainer {
     	List<String> sb = new ArrayList<String>();
     	sb.add("init_op = tf.global_variables_initializer()");
     	//sb.add("train_dir = tempfile.mkdtemp()\n");
-    	sb.add("sv = tf.train.Supervisor(is_chief=is_chief, logdir='./tmp/train_logs', init_op=init_op, recovery_wait_secs=1, global_step=global_step)");
+    	sb.add("#sv = tf.train.Server(is_chief=is_chief, logdir='./tmp/train_logs', init_op=init_op, recovery_wait_secs=1, global_step=global_step)");
     	sb.add("if is_chief:");
 			sb.add("\tprint('Worker %d: Initailizing session...' % FLAGS.task_index)");
 		sb.add("else:"); 
 			sb.add("\tprint('Worker %d: Waiting for session to be initaialized...' % FLAGS.task_index)"); 
-		sb.add("sess = sv.prepare_or_wait_for_session(server.target)");
-		sb.add("print('Worker %d: Session initialization  complete.' % FLAGS.task_index)"); 
-		sb.add("time_begin = time.time()");
-		sb.add("print('Traing begins @ %f' % time_begin)");
-		//sb.add("local_step = 0"); 
-		//sb.add("while True:"); 
+		sb.add("with tf.train.MonitoredTrainingSession(master=server.target, is_chief=(FLAGS.task_index == 0),checkpoint_dir='./tmp/train_logs'" + 
+				") as sess:");
+		//sb.add(while True:
+			sb.add("\tprint('Worker %d: Session initialization  complete.' % FLAGS.task_index)"); 
+			sb.add("\ttime_begin = time.time()");
+			//sb.add("\tprint('Traing begins @ %f' % time_begin)");
+			sb.add("\tlocal_step = 0"); 
+			sb.add("\twhile True:"); 
+				sb.add("\t\ttime_begin = time.time()");
 		//sb.add("\tbatch_xs, batch_ys = mnist.train.next_batch(FLAGS.batch_size)\n"); 
 		//sb.add("\ttrain_feed = {x: batch_xs, y_: batch_ys}\n");  
-		sb.add("_, step = sess.run([train_step, global_step], feed_dict={x:features, y:labels})"); 
+				sb.add("\t\t_, step = sess.run([train_step, global_step], feed_dict={x:features, y:labels})"); 
 		//	sb.add("\tlocal_step += 1");
-		sb.add("now = time.time()"); 
-		sb.add("print('%f: Worker %d: dome (global step:%d)' % (now, FLAGS.task_index, step))"); 
+				sb.add("\t\tnow = time.time()"); 
+				sb.add("\t\tprint('%f: Worker %d: dome (step:%d)' % (now, FLAGS.task_index, local_step+1))"); 
 		//	sb.add("\tif step >= FLAGS.train_steps:");
 		//		sb.add("\t\tbreak");
-		sb.add("time_end = time.time()"); 
-		sb.add("print('Training ends @ %f' % time_end)"); 
-		sb.add("train_time = time_end - time_begin");
-		sb.add("print('Training elapsed time:%f s' % train_time)");
+				sb.add("\t\ttime_end = time.time()"); 
+				//sb.add("\t\tprint('Training ends @ %f' % time_end)"); 
+				sb.add("\t\ttrain_time = time_end - time_begin");
+				sb.add("\t\tprint('Training elapsed time:%f s' % train_time)");
+				sb.add("\t\tlocal_step += 1");
+				sb.add("\t\tprint(os.popen('hadoop fs -touchz ' + hdfs_home + '_'.join(ip.split('.')) + '.w' + str(local_step) + 'k' + str(FLAGS.task_index)).read())");
+				sb.add("\t\tstart = time.time()");
+				sb.add("\t\twhile os.popen('hadoop fs -ls ' + hdfs_home + ' | grep w' + str(local_step) + 'k | wc -l').read().strip() != str(len(worker_spec)):");
+				
+				sb.add("\t\t\tprint('wait other worker on step ' + str(local_step) + '....')");
+				sb.add("\t\t\ttime.sleep(5)");
+				sb.add("\t\t\tif time.time()-start > 60000*30:");
+				sb.add("\t\t\t\traise Exception('Time out')");
+				sb.add("\t\tprint(os.popen('hadoop fs -rm ' + hdfs_home + '_'.join(ip.split('.')) + '.w' + str(local_step-1) + 'k' + str(FLAGS.task_index)).read())");
+				sb.add("\t\tif local_step == epoch_num:");
+					sb.add("\t\t\tprint('self work done')");
+			        sb.add("\t\t\tprint(os.popen('hadoop fs -touchz ' + hdfs_home + '_'.join(ip.split('.')) + '.wk').read())");
+			        sb.add("\t\t\tprint('aware self done')");
+			        sb.add("\t\t\tbreak");
+			sb.add("\tstart = time.time()");
+			sb.add("\twhile os.popen('hadoop fs -ls ' + hdfs_home + ' | grep wk | wc -l').read().strip() != str(len(worker_spec)):");
+				
+				sb.add("\t\tprint('wait other worker....')");
+				sb.add("\t\ttime.sleep(5)");
+				sb.add("\t\tif time.time()-start > 60000*30:");
+				sb.add("\t\t\traise Exception('Time out')");
+		 sb.add("print('All worker done')");
+		 sb.add("if os.path.exists('./tmp/train_logs/graph.pbtxt'):");
+		 	sb.add("\tfrom google.protobuf import text_format");
+		 	sb.add("\twith open('./tmp/train_logs/graph.pbtxt') as f:");
+		 		sb.add("\t\ttxt = f.read()");
+		 	sb.add("\tgdef = text_format.Parse(txt, tf.GraphDef())");
+		 	sb.add("\ttf.train.write_graph(gdef, './tmp/train_logs', 'graph.pb', as_text=False)");
+
+		 	sb.add("\tprint(os.popen('hadoop fs -put ./tmp/train_logs/graph.pb ' + hdfs_home).read())");
+		 	sb.add("\tprint('load to hdfs successfully')");
+
+		//sb.add(String.format("\tif step > %d", (Integer)modelConfig.getParams().get("numTrainEpochs")));
     	return sb;
     }
     
@@ -363,6 +400,14 @@ public class DNNTrainerTF extends AbstractTrainer {
 		}
     	sb.add("flags.DEFINE_string('ip_address_dir', '/shifu_tmp/', 'syn the ip_address of every worker')");
     	sb.add("FLAGS = flags.FLAGS");
+    	sb.add(String.format("epoch_num = %d", modelConfig.getNumTrainEpochs()));
+    	try {
+			sb.add(String.format("hdfs_home = '%s'", FileSystem.get(new Configuration()).getHomeDirectory().toString()+"/shifu_tmp/"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	sb.add("os.mkdir('./tmp/train_logs/')");
     	sb.add("def main(unused_argv):");
     	return sb;
     }
@@ -482,7 +527,7 @@ public class DNNTrainerTF extends AbstractTrainer {
     	for(String s : temp) {
     		sb.add("\t\t" + s);
     	}
-    	sb.add("\tsess.close()");
+    	//sb.add("\tsess.close()");
     	sb.addAll(addRunStep());
     	return sb;
     }
