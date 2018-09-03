@@ -222,6 +222,11 @@
 				<targetPath>scripts</targetPath>
 				<filtering>false</filtering>
 			</resource>
+			<resource>
+				<directory>src/main/resources/TFDependancy</directory>
+				<targetPath>lib</targetPath>
+				<filtering>false</filtering>
+			</resource>
 		</resources>
 		<plugins>
 			<plugin>

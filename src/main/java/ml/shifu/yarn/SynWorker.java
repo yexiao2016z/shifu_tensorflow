@@ -46,20 +46,13 @@ public class SynWorker {
 			MAX_WAIT_TIME = Long.valueOf(envs.get("MAX_WAIT_TIME_SYN"));
 			totalContainerNums =  Integer.valueOf(envs.get("TOTAL_CONTAINER_NUMS"));
 			IPAddress =  getIPAddress(regex);
-			
-			
 			System.out.println("This communication IPAddress is " + IPAddress);
 			System.out.println("Trying write IPAddress File in " + writeDir);
-			//try {
 			createFile(writeDir+"/"+IPAddress);
-			//}catch(Exception e) {
-			//	throw new RuntimeException(e.getMessage());
-			//}
 			System.out.println("Successfully write!");
 			long startTime = Time.now();
 			boolean flag = false;
 			while(Time.now()-startTime < MAX_WAIT_TIME){
-				
 				if(synFile(writeDir, totalContainerNums)) {
 					flag = true;
 					break;
@@ -73,7 +66,6 @@ public class SynWorker {
 				}
 			}
 			
-			//String dataDirPath = "hdfs://horton/user/website/ModelSets/dataset1/tmp/NormalizedData/";
 			if(!flag) {
 				System.err.println("Time out when syn...");
 				throw new Exception();

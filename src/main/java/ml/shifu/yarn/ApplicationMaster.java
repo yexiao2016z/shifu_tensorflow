@@ -85,7 +85,7 @@ public class ApplicationMaster{
 			
 			dataPathDir = envs.get("DATA_PATH_DIR");
 			writeDir = fs.getHomeDirectory().toString() + "/shifu_tmp";
-			numTotalContainers = getContainerNum(dataPathDir);
+			//numTotalContainers = getContainerNum(dataPathDir);
 			try {
 				numTotalContainers = Integer.valueOf(envs.get("NUM_TOTAL_CONTAINERS"));
 			}catch(Exception e){e.printStackTrace();}
@@ -336,6 +336,7 @@ public class ApplicationMaster{
 				command2.append("1>>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout ");
 				command2.append("2>>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr;");
 				commands.add(command2.toString());
+				
 				//commands.add("ls -R ./tmp;");
 				//commands.add("if [ -f \"./tmp/train_logs/*.pbtxt\"]; then hadoop fs -put ./tmp/train_logs/*.pbtxt; " + fs.getHomeDirectory()+"/shifu_tmp/; fi");
 				ContainerLaunchContext ctx = ContainerLaunchContext.newInstance(
@@ -389,19 +390,7 @@ public class ApplicationMaster{
 		amRMClient.stop();
 		System.out.println("amRMClient  stop Complete");
 	}
-	private int getContainerNum(String dataPathDir) throws Exception {
-		try {
-			List<FileStatus> dataFileStatus = new ArrayList<FileStatus>();
-	    	for (FileStatus status : fs.listStatus(new Path(dataPathDir))){
-	    		if (status.getPath().getName().endsWith(".gz"))
-	    			dataFileStatus.add(status);
-	    	}
-	    	int dataFileNums = dataFileStatus.size();
-	    	return dataFileNums <= 40 ? dataFileNums+1 : 41;
-		}catch(Exception e) {
-			throw e;
-		}
-	}
+	
 	public static void main(String[] args) {
 		ApplicationMaster am = null;
 		try {

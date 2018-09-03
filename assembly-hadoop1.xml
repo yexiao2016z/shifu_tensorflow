@@ -105,6 +105,7 @@
                 <exclude>*-javadoc.jar</exclude>
             </excludes>
         </fileSet>
+        
     </fileSets>
     <dependencySets>
         <dependencySet>

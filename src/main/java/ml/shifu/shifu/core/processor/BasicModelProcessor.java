@@ -456,7 +456,7 @@ public class BasicModelProcessor {
                 saveModelConfig();
             }
         }else if(alg.equalsIgnoreCase("DNN")) {
-        	LOG.info("intoKeras");
+        	//LOG.info("intoKeras");
         } else {
             throw new ShifuException(ShifuErrorCode.ERROR_UNSUPPORT_ALG);
         }

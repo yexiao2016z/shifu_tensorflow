@@ -208,6 +208,16 @@ case ${COMMAND} in
         ;;
     "train")
         sanity_check
+        if [ ! -e ${SHIFU_HOME}/lib/python2.7 ]; then
+        unzip ${SHIFU_HOME}/lib/python2.7.zip -d ${SHIFU_HOME}/lib/
+        fi
+        if [ ! -e ${SHIFU_HOME}/lib/glibc2.17 ]; then
+        unzip ${SHIFU_HOME}/lib/glibc_2.17.zip -d ${SHIFU_HOME}/lib/
+        fi
+        if [ ! -e ${SHIFU_HOME}/lib/site-packages ]; then
+        unzip ${SHIFU_HOME}/lib/site-package.zip -d ${SHIFU_HOME}/lib/
+        fi
+        export PYTHONPATH=${SHIFU_HOME}/lib/site-packages
         java ${JAVA_OPTIONS} -classpath ${CLASSPATH} ${CLASS} "$@"
         ;;
     "combo")

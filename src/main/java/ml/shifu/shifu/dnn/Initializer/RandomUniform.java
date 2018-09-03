@@ -11,10 +11,10 @@ public class RandomUniform extends Initializer{
 		this.maxVal = maxVal;
 	}
 	public RandomUniform(double minVal) {
-		this(minVal,1);
+		this(minVal,0.05);
 	}
 	public RandomUniform() {
-		this(0);
+		this(-0.05);
 	}
 	public double getMinVal() {
 		return this.minVal;

@@ -7,7 +7,7 @@ public class RandomNormal extends Initializer {
 	private double stddev;
 	public RandomNormal() {
 		//super(InitializerCatagory.RandomNormal);
-		this(0,1);
+		this(0,0.05);
 	}
 	public RandomNormal(double mean, double stddev) {
 		super(InitializerCatagory.RandomNormal);

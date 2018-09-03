@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package ml.shifu.init;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

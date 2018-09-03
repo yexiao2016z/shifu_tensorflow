@@ -39,7 +39,7 @@ elif optimizer == "adagrad":
 	optimizer = tf.keras.optimizers.Adagrad(lr=learning_rate, decay=LEARNING_DECAY)
 elif optimizer == "rmsprop":
 	optimizer = tf.keras.optimizers.RMSprop(lr=learning_rate, decay=LEARNING_DECAY)
-elfi optimizer == "nadam":
+elif optimizer == "nadam":
 	optimizer = tf.keras.optimizers.Nadam(lr=learning_rate, beta_1=ADAMBETA1, beta_2=ADAMBETA2)
 
 if loss == "squared":
@@ -114,11 +114,18 @@ for i in range(bagging_num):
 	sample_weight = data[[len(select_status)]].values.flatten()
 	
 	print("Start Model Fitting in Bagging Turn " + str(index))
-	model.fit(x=x_data,y=y_data,epochs=epochs,validation_split=valid_rate,sample_weight=sample_weight)
+	model.fit(x=x_data,y=y_data,epochs=epochs,validation_split=valid_rate)
 	print("End Model Fitting in Bagging Turn " + str(index))
-	frozen_graph = freeze_session(tf.keras.backend.get_session(),
-                              output_names=[out.op.name for out in model.outputs])
-	tf.train.write_graph(frozen_graph,".",
-						"./models/model_save"+str(i)+".pb",as_text=False)
+	sess = tf.keras.backend.get_session()
+	builder = tf.saved_model.builder.SavedModelBuilder('./modelx')
+	builder.add_meta_graph_and_variables(sess,[tf.saved_model.tag_constants.SERVING])
+	#frozen_graph = freeze_session(tf.keras.backend.get_session(),
+    #                          output_names=[out.op.name for out in model.outputs])
+	#tf.train.write_graph(frozen_graph,".",
+	#					"./models/model_save"+str(i)+".pb",as_text=False)
+	builder.save()
+	os.popen('mv ./modelx/* ./models')
+	os.popen('rm -r ./modelx')
 	print("Save Model File Successfully in Bagging Turn" + str(index))
 	index += 1
+exit(0)

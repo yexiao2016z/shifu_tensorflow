@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @author Zhang David (pengzhang@paypal.com)
  */
 public abstract class Step<STEP_RESULT> {
-
+	
     private final static Logger LOG = LoggerFactory.getLogger(Step.class);
 
     protected final ModelConfig modelConfig;

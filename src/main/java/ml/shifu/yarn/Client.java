@@ -1,12 +1,17 @@
 package ml.shifu.yarn;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -33,17 +38,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import ml.shifu.shifu.util.JSONUtils;
-
 
 public class Client {
 	//char[]  
 	private static final Logger LOG = LoggerFactory.getLogger(Client.class);
 	final long MAX_WAIT_TIME = 60000*100;
-	public void run(String dataPathDir, String shifuVersion) {
-		FileSystem fs = null;
+	FileSystem fs = null;
+	@SuppressWarnings("deprecation")
+	public void run(String dataPathDir, String shifuVersion) throws Exception {
+		
 		String appName = "test";
 		try {
 			;
@@ -66,7 +69,7 @@ public class Client {
 			
 			fs = FileSystem.get(conf);
 			String shifuHome = System.getenv("SHIFU_HOME");
-			String packageDir = shifuHome + "/TFDependancy";
+			String packageDir = shifuHome + "/lib";
 			String version = shifuVersion;
 			String appMasterJar = "shifu-" + version + ".jar";
 			String appMasterJarPath = shifuHome + "/lib" + "/" + appMasterJar;
@@ -105,24 +108,23 @@ public class Client {
 			env.put("MAX_WAIT_TIME_AM", "10800000");
 			env.put("CONTAINER_MEMORY", "1024");
 			env.put("CONTAINER_VIRTUAL_CORES", "1");
+			int numTotalContainers = getContainerNum(dataPathDir);
+			env.put("NUM_TOTAL_CONTAINERS", String.valueOf(numTotalContainers));
 			env.put("REGEX", "10\\.\\d+?\\.\\d+?\\.\\d+?");
 			try {
-				env.putAll(JSONUtils.readValue(shifuHome+"/conf/yarnConf.json", HashMap.class));
-				//env.putAll(new ObjectMapper().readValue(shifuHome+"/conf/yarnConf.json", Map<String, String>));
+				//env.putAll(JSONUtils.readValue(shifuHome+"/conf/yarnConf.json", HashMap.class));
+				env.putAll(new ObjectMapper().readValue(new FileReader(shifuHome+"/conf/yarnConf.json"), HashMap.class));
+				numTotalContainers = Integer.parseInt(env.get("NUM_TOTAL_CONTAINERS"));
 			}catch(Exception e) {
-				e.printStackTrace();
+				LOG.info("Error in yarnConf, use default parameters!");
 			}
-			LOG.info("Setting up app master command");
-			//vargs.add(Environment.JAVA_HOME.$$() + "/bin/java");
-			// Set Xmx based on am memory size
+			LOG.info("Setting up app master command...");
+			
 			int amMemory = 1024;
 			int amVCores = 2;
 			int amPriority = 0;
 			String amQueue = "default";
-			//vargs.add("-Xmx" + amMemory + "m");
-			// Set class name
-			//vargs.add(ApplicationMaster.class.getName());
-			// Set params for Application Master
+			
 			List<String> commands = new LinkedList<String>();
 			StringBuilder command = new StringBuilder();
 			command.append(Environment.JAVA_HOME.$$()).append("/bin/java  ");
@@ -184,23 +186,58 @@ public class Client {
 			
 			long start = Time.now();
 			//ApplicationReport report = yarnClient.getApplicationReport(appId);
+			int epoch_index = 1;
 			while(!yarnClient.getApplicationReport(appId).getFinalApplicationStatus().name().equalsIgnoreCase("SUCCEEDED") &&
 					Time.now()-start < MAX_WAIT_TIME) {
-				LOG.info("Task not complete...");
+				int count = 0;
+				for(FileStatus status : fs.listStatus(new Path(fs.getHomeDirectory(), "shifu_tmp"))){
+					if(Pattern.matches("result" + String.valueOf(epoch_index) + "_\\d+", status.getPath().getName()))
+						count++;
+				}
+				if(count == numTotalContainers-1) {
+					double trainErr = 0;
+					double valiErr = 0;
+					for(FileStatus status : fs.listStatus(new Path(fs.getHomeDirectory(), "shifu_tmp"))){
+						if(Pattern.matches("result" + String.valueOf(epoch_index) + "_\\d+", status.getPath().getName())) {
+							FSDataInputStream in = null;
+			                //FileOutputStream out = null;
+			                try {
+			                    in = fs.open(status.getPath());
+			                    byte[] t = new byte[in.available()];
+			                    in.read(t);
+			                    String s = new String(t);
+			                    trainErr += Double.parseDouble(s.split(";")[0]);
+			                    valiErr += Double.parseDouble(s.split(";")[1]);
+			                } catch(Exception e){
+			                	e.printStackTrace();
+			                }finally {
+			                    in.close();
+			                }
+
+						}
+							
+					}
+					LOG.info(String.format("Epoch %d done : trainErr--%f    validationErr--%f", epoch_index,trainErr,valiErr));
+					if(epoch_index > 1)
+						for(int i = 0; i < numTotalContainers-1; i++) {
+							fs.delete(new Path(fs.getHomeDirectory(),String.format("shifu_tmp/result%d_%d",epoch_index-1,i)));
+						}
+					epoch_index++;	
+				}
+				
 				Thread.sleep(5000);
 			}
 			LOG.info("Task complete!");
-			fs.copyToLocalFile(new Path(fs.getHomeDirectory(),"shifu_tmp/graph.pb"), new Path("./models/graph.pb"));
+			fs.copyToLocalFile(new Path(fs.getHomeDirectory(),"shifu_tmp/models"), new Path("./models/graph.pb"));
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
 			try {
-				//fs.de
 				if(!fs.delete(new Path(fs.getHomeDirectory(),"shifu_tmp"),true))
 					throw new Exception("Not delete the file under /shifu_tmp...");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw e;
 			}
 		}
 	}
@@ -225,7 +262,19 @@ public class Client {
 				scFileStatus.getModificationTime());
 		localResources.put(fileName, scRsrc);
 	}
-	
+	private int getContainerNum(String dataPathDir) throws Exception {
+		try {
+			List<FileStatus> dataFileStatus = new ArrayList<FileStatus>();
+	    	for (FileStatus status : fs.listStatus(new Path(dataPathDir))){
+	    		if (status.getPath().getName().endsWith(".gz"))
+	    			dataFileStatus.add(status);
+	    	}
+	    	int dataFileNums = dataFileStatus.size();
+	    	return dataFileNums <= 40 ? dataFileNums+1 : 41;
+		}catch(Exception e) {
+			throw e;
+		}
+	}
 	public static void main(String[] args) {
 		try {
 //			new Client().run();

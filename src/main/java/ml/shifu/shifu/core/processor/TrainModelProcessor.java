@@ -329,13 +329,12 @@ public class TrainModelProcessor extends BasicModelProcessor implements Processo
     	}
 
      	DNNTrainer trainer;
-        //trainer = new DNNTrainer(modelConfig,0,true,select_status.substring(0, select_status.length()-1));
      	trainer = new DNNTrainer(modelConfig,0,true,select_status.substring(0, select_status.length()-1));
         try {
 	        trainer.buildNetwork();
 	        LOG.info("Generate Model Json File in Directory models called model0.dnn");
 	        trainer.train();
-	        LOG.info("Train Successful");
+	        //LOG.info("Train Successful");
         }
         catch(Exception e) {
 		e.printStackTrace(System.out);
@@ -356,16 +355,11 @@ public class TrainModelProcessor extends BasicModelProcessor implements Processo
     		
     	}
      	DNNTrainerTF trainer;
-        //trainer = new DNNTrainer(modelConfig,0,true,select_status.substring(0, select_status.length()-1));
      	trainer = new DNNTrainerTF(modelConfig,0,true,select_status.substring(0, select_status.length()-1));
         try {
-	        //trainer.buildNetwork();
-	        //LOG.info("Generate Model Json File in Directory models/");
 	        trainer.train();
-	        LOG.info("Train Successfully");
         }
         catch(Exception e) {
-		//e.printStackTrace(System.out);
         	throw new RuntimeException("Train or Build Model Failure" + e.getMessage());
         }
         

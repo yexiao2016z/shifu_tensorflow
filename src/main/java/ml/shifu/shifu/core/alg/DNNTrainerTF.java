@@ -1,6 +1,5 @@
 package ml.shifu.shifu.core.alg;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -8,55 +7,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import ml.shifu.shifu.container.ModelInitInputObject;
-import ml.shifu.shifu.container.obj.ColumnConfig;
 import ml.shifu.shifu.container.obj.ModelConfig;
-import ml.shifu.shifu.container.obj.RawSourceData.SourceType;
 import ml.shifu.shifu.core.AbstractTrainer;
-import ml.shifu.shifu.core.ConvergeJudger;
-import ml.shifu.shifu.core.MSEWorker;
-import ml.shifu.shifu.core.dtrain.CommonConstants;
-import ml.shifu.shifu.fs.ShifuFileUtils;
-import ml.shifu.shifu.keras.KerasExecutor;
-import ml.shifu.shifu.util.Environment;
-import ml.shifu.shifu.util.JSONUtils;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.encog.engine.network.activation.ActivationLOG;
-import org.encog.engine.network.activation.ActivationLinear;
-import org.encog.engine.network.activation.ActivationSIN;
-import org.encog.engine.network.activation.ActivationSigmoid;
-import org.encog.engine.network.activation.ActivationTANH;
-import org.encog.mathutil.IntRange;
-import org.encog.ml.data.MLDataSet;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.training.propagation.Propagation;
-import org.encog.neural.networks.training.propagation.back.Backpropagation;
-import org.encog.neural.networks.training.propagation.manhattan.ManhattanPropagation;
-import org.encog.neural.networks.training.propagation.quick.QuickPropagation;
-import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.neural.networks.training.propagation.scg.ScaledConjugateGradient;
-import org.encog.persist.EncogDirectoryPersistence;
-import org.encog.util.concurrency.DetermineWorkload;
-import org.encog.util.concurrency.EngineConcurrency;
-import org.encog.util.concurrency.TaskGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
-import ml.shifu.shifu.dnn.Common;
 import ml.shifu.shifu.dnn.Common.*;
 import ml.shifu.shifu.dnn.Initializer.Constant;
 import ml.shifu.shifu.dnn.Initializer.Initializer;
@@ -192,7 +151,7 @@ public class DNNTrainerTF extends AbstractTrainer {
     		Initializer k = ((Dense)layer).getKernelInitializer();
     		Initializer b = ((Dense)layer).getBiasInitializer();
     		sb.addAll(addInitializer(null, layerName, units, k, "w"));
-    		sb.addAll(addInitializer(null,layerName, units, k, "b"));
+    		sb.addAll(addInitializer(null,layerName, units, b, "b"));
     		//params.put("units", ((Dense)layer).getUnits());
 		if (this.last_layer != null)
     			sb.add(String.format("%s_out =  tf.nn.xw_plus_b(%s_outac, %s_w ,%s_b)\n", layerName, this.last_layer.getName(),layerName,  layerName));
@@ -200,13 +159,13 @@ public class DNNTrainerTF extends AbstractTrainer {
 			
     			sb.add(String.format("%s_out = tf.nn.xw_plus_b(x, %s_w, %s_b)", layerName, layerName,  layerName));
 		if (ac.equals(ActivationCatagory.sigmoid)) {
-    			sb.add(String.format("%s_outac = tf.nn.sigmoid(%s_out)", layerName, layerName));
+    			sb.add(String.format("%s_outac = tf.nn.sigmoid(%s_out,name='%s_outac')", layerName, layerName,layerName));
     		}else if(ac.equals(ActivationCatagory.softmax)) {
-    			sb.add(String.format("%s_outac = tf.nn.softmax(%s_out)", layerName, layerName));
+    			sb.add(String.format("%s_outac = tf.nn.softmax(%s_out,name='%s_outac')", layerName, layerName,layerName));
     		}else if(ac.equals(ActivationCatagory.tanh)) {
-    			sb.add(String.format("%s_outac = tf.nn.tanh(%s_out)", layerName, layerName));
+    			sb.add(String.format("%s_outac = tf.nn.tanh(%s_out,name='%s_outac')", layerName, layerName,layerName));
     		}else if(ac.equals(ActivationCatagory.relu)) {
-    			sb.add(String.format("%s_outac = tf.nn.relu(%s_out)", layerName, layerName));
+    			sb.add(String.format("%s_outac = tf.nn.relu(%s_out,name='%s_outac')", layerName, layerName,layerName));
     		}else if(ac.equals(ActivationCatagory.linear)) {
     			sb.add(String.format("%s_outac = %s_out\n", layerName, layerName));
     		}
@@ -214,7 +173,7 @@ public class DNNTrainerTF extends AbstractTrainer {
     		this.lastLayerNum = units;
     	}else if(layer.getLayerCatagory().equals(LayerCatagory.Dropout)) {
     		double rate = ((Dropout)layer).getRate();
-    		sb.add(String.format("%s_outac = tf.nn.dropout(%s_outac, %f)", layerName, this.last_layer.getName(), rate));
+    		sb.add(String.format("%s_outac = tf.nn.dropout(%s_outac, %f, name='%s_outac')", layerName, this.last_layer.getName(), rate,layerName));
     		this.last_layer = layer;
     	}
     	return sb;
@@ -245,10 +204,10 @@ public class DNNTrainerTF extends AbstractTrainer {
     		double minVal = ((RandomUniform)ini).getMinVal();
     		double maxVal = ((RandomUniform)ini).getMaxVal();
     		if (wORb == "w")
-    			sb.add(String.format("%s = tf.Variable(tf.random_uniform([%d, %d], minVal=%f, maxVal=%f), name='%s')", varName, this.lastLayerNum, 
+    			sb.add(String.format("%s = tf.Variable(tf.random_uniform([%d, %d], minval=%f, maxval=%f), name='%s')", varName, this.lastLayerNum, 
     					layerNum,minVal, maxVal, varName));
     		else
-    			sb.add(String.format("%s = tf.Variable(tf.random_uniform([%d], minVal=%f, maxVal=%f), name='%s')", varName, layerNum, minVal, 
+    			sb.add(String.format("%s = tf.Variable(tf.random_uniform([%d], minval=%f, maxval=%f), name='%s')", varName, layerNum, minVal, 
     					maxVal, varName));
     	}
     	if (deviceName == null) {
@@ -270,8 +229,8 @@ public class DNNTrainerTF extends AbstractTrainer {
     			columnNumsY++;
     		}
     	}
-    	String x = String.format("x = tf.placeholder(tf.float32, [None, %d])", columnNumsX);
-    	String y = String.format("y = tf.placeholder(tf.float32, [None, %d])", columnNumsY);
+    	String x = String.format("x = tf.placeholder(tf.float32, [None, %d],name='x')", columnNumsX);
+    	String y = String.format("y = tf.placeholder(tf.float32, [None, %d],name='y')", columnNumsY);
     	
     	//StringBuilder sb = new StringBuilder();
     	if (deviceName == null) {
@@ -317,7 +276,7 @@ public class DNNTrainerTF extends AbstractTrainer {
 				sb.add("\t\ttrain_time = time_end - time_begin");
 				sb.add("\t\tprint('Training elapsed time:%f s' % train_time)");
 				sb.add("\t\tlocal_step += 1");
-				sb.add("\t\tprint(os.popen('hadoop fs -touchz ' + hdfs_home + '_'.join(ip.split('.')) + '.w' + str(local_step) + 'k' + str(FLAGS.task_index)).read())");
+				sb.add("\t\tprint(os.popen('hadoop fs -touchz ' + hdfs_home +  '/w' + str(local_step) + 'k' + str(FLAGS.task_index)).read())");
 				sb.add("\t\tstart = time.time()");
 				sb.add("\t\twhile os.popen('hadoop fs -ls ' + hdfs_home + ' | grep w' + str(local_step) + 'k | wc -l').read().strip() != str(len(worker_spec)):");
 				
@@ -325,10 +284,19 @@ public class DNNTrainerTF extends AbstractTrainer {
 				sb.add("\t\t\ttime.sleep(5)");
 				sb.add("\t\t\tif time.time()-start > 60000*30:");
 				sb.add("\t\t\t\traise Exception('Time out')");
-				sb.add("\t\tprint(os.popen('hadoop fs -rm ' + hdfs_home + '_'.join(ip.split('.')) + '.w' + str(local_step-1) + 'k' + str(FLAGS.task_index)).read())");
+				sb.add("\t\ttrain_loss = sess.run([loss],feed_dict={x:features,y:labels})[0]");
+				sb.add("\t\tvali_loss = sess.run([loss],feed_dict={x:features_vali,y:labels_vali})[0]");
+				sb.add("\t\tprint(os.popen('echo \"' + str(train_loss)+';'+str(vali_loss) +'\" | hadoop fs -put - ' + hdfs_home + '/result'     + str(local_step) + '_' + str(FLAGS.task_index)).read())");
+				sb.add("\t\twhile os.popen('hadoop fs -ls ' + hdfs_home + ' | grep result' + str(local_step) + '_ | wc -l').read().strip() != str(len(worker_spec)):");
+					sb.add("\t\t\tprint('wait other worker on  Err step ' + str(local_step) + '....')");
+					sb.add("\t\t\ttime.sleep(5)");
+					sb.add("\t\t\tif time.time()-start > 60000*30:");
+						sb.add("\t\t\t\traise Exception('Time out')");
+
+				sb.add("\t\tprint(os.popen('hadoop fs -rm ' + hdfs_home + '/w' + str(local_step-1) + 'k' + str(FLAGS.task_index)).read())");
 				sb.add("\t\tif local_step == epoch_num:");
 					sb.add("\t\t\tprint('self work done')");
-			        sb.add("\t\t\tprint(os.popen('hadoop fs -touchz ' + hdfs_home + '_'.join(ip.split('.')) + '.wk').read())");
+			        sb.add("\t\t\tprint(os.popen('hadoop fs -touchz ' + hdfs_home + '/wk' + str(FLAGS.task_index)).read())");
 			        sb.add("\t\t\tprint('aware self done')");
 			        sb.add("\t\t\tbreak");
 			sb.add("\tstart = time.time()");
@@ -338,15 +306,21 @@ public class DNNTrainerTF extends AbstractTrainer {
 				sb.add("\t\ttime.sleep(5)");
 				sb.add("\t\tif time.time()-start > 60000*30:");
 				sb.add("\t\t\traise Exception('Time out')");
+			sb.add("\tif is_chief:");
+				sb.add("\t\tbuilder = tf.saved_model.builder.SavedModelBuilder('./models')");
+				sb.add("\t\tsess.graph._unsafe_unfinalize()");
+				sb.add("\t\tbuilder.add_meta_graph_and_variables(sess._sess._sess._sess._sess,[tf.saved_model.tag_constants.SERVING])");
+				sb.add("\t\tsess.graph.finalize()");
+				sb.add("\t\tbuilder.save()");
 		 sb.add("print('All worker done')");
-		 sb.add("if os.path.exists('./tmp/train_logs/graph.pbtxt'):");
-		 	sb.add("\tfrom google.protobuf import text_format");
-		 	sb.add("\twith open('./tmp/train_logs/graph.pbtxt') as f:");
-		 		sb.add("\t\ttxt = f.read()");
-		 	sb.add("\tgdef = text_format.Parse(txt, tf.GraphDef())");
-		 	sb.add("\ttf.train.write_graph(gdef, './tmp/train_logs', 'graph.pb', as_text=False)");
+		// sb.add("if is_chief:");
+		// 	sb.add("\tbuilder = tf.saved_model.builder.SavedModelBuilder('./models')");
+		// 	sb.add("\twith open('./tmp/train_logs/graph.pbtxt') as f:");
+		// 		sb.add("\t\ttxt = f.read()");
+		// 	sb.add("\tgdef = text_format.Parse(txt, tf.GraphDef())");
+	//	 	sb.add("\ttf.train.write_graph(gdef, './tmp/train_logs', 'graph.pb', as_text=False)");
 
-		 	sb.add("\tprint(os.popen('hadoop fs -put ./tmp/train_logs/graph.pb ' + hdfs_home).read())");
+		 	sb.add("\tprint(os.popen('hadoop fs -put ./models ' + hdfs_home).read())");
 		 	sb.add("\tprint('load to hdfs successfully')");
 
 		//sb.add(String.format("\tif step > %d", (Integer)modelConfig.getParams().get("numTrainEpochs")));
@@ -372,8 +346,6 @@ public class DNNTrainerTF extends AbstractTrainer {
     	sb.add("import tensorflow as tf");
     	sb.add("import time");
     	sb.add("import pandas as pd");
-    	//sb.add("from hdfs3 import HDFileSystem");
-    	//sb.add("from hdfs.ext.kerberos import KerberosClient");
     	sb.add("import os");
     	//sb.add("print(os.listdir('.'))");
     	sb.add("import numpy as np");
@@ -386,8 +358,7 @@ public class DNNTrainerTF extends AbstractTrainer {
     	sb.add("flags.DEFINE_integer('task_index', None, 'Index of task within the job')");
     	sb.add("flags.DEFINE_string('name_node', None, 'NameNode')");
     	sb.add("flags.DEFINE_integer('node_nums', None, 'NameNode')");
-    	//sb.add(String.format("flags.DEFINE_float('learning_rate', %f, 'Learning rate')\n", 
-    	//		(Double)this.modelConfig.getParams().get("LearningRate")));
+
     	sb.add(String.format("flags.DEFINE_integer('train_steps', %d, 'Number of training steps to perform')"
     			, modelConfig.getNumTrainEpochs()));
     	//FileSystem fs = new FileSystem(new Configuration());
@@ -400,6 +371,7 @@ public class DNNTrainerTF extends AbstractTrainer {
 		}
     	sb.add("flags.DEFINE_string('ip_address_dir', '/shifu_tmp/', 'syn the ip_address of every worker')");
     	sb.add("FLAGS = flags.FLAGS");
+    	sb.add(String.format("sample_rate = %f", modelConfig.getValidSetRate()));
     	sb.add(String.format("epoch_num = %d", modelConfig.getNumTrainEpochs()));
     	try {
 			sb.add(String.format("hdfs_home = '%s'", FileSystem.get(new Configuration()).getHomeDirectory().toString()+"/shifu_tmp/"));
@@ -422,26 +394,6 @@ public class DNNTrainerTF extends AbstractTrainer {
     			targetCol.add(i);
     		}
     	}
-    	
-    	
-    	//sb.add("import socket");
-    	//sb.add("import os");
-    	/*
-    	sb.add("f = os.popen('ifconfig eth0 | grep \"inet\\ addr\" | cut -d: -f2 | cut -d\" \" -f1')");
-    	sb.add("ip = f.read().strip()");
-    	sb.add("if FLAGS.job_name == 'ps':");
-    		sb.add("\timport getpass");
-    		sb.add("\tusername = getpass.getuser()");
-    		sb.add("\tos.popen('hadoop fs -touchz /user/'+username+'/'+FLAGS.data_dir+'/master-'+username+'-'+'-'.join(ip.split('.'))+'-22222.ip')");
-    	sb.add("else:");
-    		sb.add("\twhile not [file for file in client_hdfs.list(FLAGS.data_dir) if file.startswith('master')]:");
-    			sb.add("\t\ttime.sleep(2)");
-    		sb.add("\tusername =  [file for file in client_hdfs.list(FLAGS.data_dir) if file.startswith('master')][0].split('-')[1]");
-    		sb.add("\tos.popen('hadoop fs -touchz /user/'+username+'/'+FLAGS.data_dir+'/'+'-'.join(ip.split('.'))+'-22222.ip')");
-    	//sb.add("count_ip = 0");
-    	 */
-    	//sb.add("count_file = 0");
-    	//sb.add("hdfs = HDFileSystem(host='lvshdc2en0005.lvs.paypal.com', port=8020, token='./container_tokens', user='website')");
     	sb.add("counter = 0");
     	sb.add("while not os.path.exists('ipz') and counter < 3:");
     	sb.add("\ttime.sleep(60)");
@@ -450,20 +402,11 @@ public class DNNTrainerTF extends AbstractTrainer {
     	sb.add("import re");
     	sb.add("ip = re.findall('10\\.\\d+?\\.\\d+?\\.\\d+',os.popen('ifconfig').read().strip())[0]");
     	sb.add("file_names = list()");
-    	//sb.add("for file in hdfs.list('shifu_tmp/'):");
-    	//	sb.add("\tif file.endswith('.ip'):");
-    	//		sb.add("\t\tfile = file.strip('.ip').split('_')");
-    	//		sb.add("\t\tfile_names.append('.'.join(file[:-1])+':'+file[-1])");
-    	//sb.add("if os.path.exists(./ips):");
-    	//sb.add("\tall = open('./ips').readline().strip().split(',')");
-    	//sb.add("\tFLAGS.ps_hosts=all[0]");
-    	//sb.add("\tFLAGS.worker_hosts=','.join(all[1:])");
-    	
-    	
     	sb.add("with open('ipz', 'r') as f:");
     		sb.add("\tfile_names = f.readline().strip().split(',')");
     	sb.add("ps_spec = list([file_names[0]])");
     	sb.add("worker_spec = file_names[1:]");
+    	//sb.add("worker_spec[0] = worker_spec[0].split(':')[0] + str(int(worker_spec[0].split(':')[1])+1)");
     	sb.add("print(ps_spec)");
     	sb.add("print(worker_spec)");
     	sb.add("if ip == ps_spec[0].split(':')[0]:");
@@ -473,30 +416,24 @@ public class DNNTrainerTF extends AbstractTrainer {
     	sb.add("\tFLAGS.job_name = 'worker'");
     	sb.add("\tFLAGS.task_index = list([i.split(':')[0] for i in worker_spec]).index(ip)");
     	sb.add("count_file = len([1 for file in os.listdir('.') if file.endswith('.gz')])");
-    	//sb.add("while not [file for file in client_hdfs.list(FLAGS.data_dir) if file.endswith('.ipg')]:");
-    	//sb.add("\tcount_ip = 0");
-    	//	sb.add("\ttime.sleep(2)");
+
     	sb.add("count_ip = len(worker_spec)");
-    	//sb.add("FLAGS.ps_hosts = ','.join(['.'.join(file.strip('.ip').split('-')[2:6]) + ':' + file.strip('.ip').split('-')[-1]"
-    	//		+ " for file in client_hdfs.list(FLAGS.data_dir) if file.startswith('master')])");
-    	//sb.add("FLAGS.worker_hosts = ','.join(['.'.join(file.strip('.ip').split('-')[0:4]) + ':' + file.strip('.ip').split('-')[-1] "
-    	//		+ "for file in client_hdfs.list(FLAGS.data_dir) if file.endswith('.ip') and not file.startswith('master')])");
-    	//sb.add("if count_ip <= count_file and FLAGS.job_name != 'ps':");
-    	//	sb.add("\tdata_parts = [i*count_ip+FLAGS.task_index for i in range(count_file // count_ip+1) if i*count_ip+FLAGS.task_index < count_file]");
+    	
     	sb.add("data = pd.DataFrame()");
-    	//	sb.add("\tfor i in data_parts:");
-    	//		sb.add("\t\twith hdfs.open(FLAGS.data_dir+'/'+'part'+str(i)+'.gz', 'r') as reader:");
-    	//			sb.add("\t\t\treader=gzip.GzipFile(fileobj=io.BytesIO(reader.read()))");
     	sb.add("if FLAGS.job_name == 'worker':");
     		sb.add("\tfor file in os.listdir('.'):");
     			sb.add("\t\tif file.endswith('.gz'):");
     				sb.add("\t\t\ttmp_data = pd.read_csv(file, sep='|',compression='gzip', header=None, dtype=np.float32)");
     				sb.add("\t\t\tdata = pd.concat([tmp_data,data])");
     		sb.add("\tif len(data) == 0:exit(-1)");
-    				//sb.add("\t\t\tprint('Loading Data File'+ str(index))");
-    		sb.add(String.format("\tfeatures = data[%s].values", featureCol.toString()));
+    		sb.add(String.format("\tfeatures = data[%s].values*data[[len(data.columns)-1]].values", featureCol.toString()));
     		sb.add(String.format("\tlabels = data[%s].values", targetCol.toString()));
-    	
+    		sb.add("\tt = int(len(features)*sample_rate)");
+    		sb.add("\tfeatures_vali = features[:t]");
+    		sb.add("\tlabels_vali = labels[:t]");
+    		sb.add("\tfeatures = features[t:]");
+    		sb.add("\tlabels = labels[t:]");
+
     		
     	return sb;
     }
@@ -527,23 +464,19 @@ public class DNNTrainerTF extends AbstractTrainer {
     	for(String s : temp) {
     		sb.add("\t\t" + s);
     	}
-    	//sb.add("\tsess.close()");
+    	
     	sb.addAll(addRunStep());
     	return sb;
     }
     @Override
     public double train() throws IOException {
-    	File models = new File("models");
-        FileUtils.forceMkdir(models);
     	try {
+    		File models = new File("models");
+            FileUtils.forceMkdir(models);
     		List<String> tmp = this.makeScript();
     		Path file = Paths.get("./models/script.py");
     		Files.write(file, tmp, Charset.forName("UTF-8"));
     		LOG.info("Successfully generate tensorflow script in models/script.py!");
-    		//String kerasScriptPath = Environment.getProperty(Environment.SHIFU_HOME) + "/scripts/train.py";
-    		//KerasExecutor.getExecutor().submitJob(modelConfig, kerasScriptPath, 
-    		//		SourceType.HDFS, pathFinder, "./models/model0.dnn", select_status);
-    		
     	}catch(Exception e) {
     		throw new IOException(e.getMessage().toString());
     	}
