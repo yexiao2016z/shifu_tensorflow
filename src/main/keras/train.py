@@ -106,26 +106,32 @@ def freeze_session(session, keep_var_names=None, output_names=None, clear_device
                                                       output_names, freeze_var_names)
         return frozen_graph
 
-for i in range(bagging_num):
-	print("Start Bagging Turn " + str(index))
-	data = data_raw.sample(frac=bagging_sample_rate,replace=bagging_replace)
-	x_data = data[x].values
-	y_data = data[y].values.flatten()
-	sample_weight = data[[len(select_status)]].values.flatten()
+#for i in range(bagging_num):
+#	print("Start Bagging Turn " + str(index))
+data = data_raw.sample(frac=bagging_sample_rate,replace=bagging_replace)
+x_data = data[x].values
+y_data = data[y].values.flatten()
+sample_weight = data[[len(select_status)]].values.flatten()
 	
-	print("Start Model Fitting in Bagging Turn " + str(index))
-	model.fit(x=x_data,y=y_data,epochs=epochs,validation_split=valid_rate)
-	print("End Model Fitting in Bagging Turn " + str(index))
+#print("Start Model Fitting in Bagging Turn " + str(index))
+for i in range(epochs//50):
+	model.fit(x=x_data,y=y_data,epochs=50,validation_split=valid_rate)
+	#print("End Model Fitting in Bagging Turn " + str(index))
 	sess = tf.keras.backend.get_session()
-	builder = tf.saved_model.builder.SavedModelBuilder('./modelx')
+	builder = tf.saved_model.builder.SavedModelBuilder('./model/model_epoch'+str(i))
 	builder.add_meta_graph_and_variables(sess,[tf.saved_model.tag_constants.SERVING])
 	#frozen_graph = freeze_session(tf.keras.backend.get_session(),
     #                          output_names=[out.op.name for out in model.outputs])
 	#tf.train.write_graph(frozen_graph,".",
 	#					"./models/model_save"+str(i)+".pb",as_text=False)
 	builder.save()
-	os.popen('mv ./modelx/* ./models')
-	os.popen('rm -r ./modelx')
-	print("Save Model File Successfully in Bagging Turn" + str(index))
-	index += 1
+	#os.popen('mv ./modelx/* ./models')
+	#os.popen('rm -r ./modelx')
+	#print("Save Model File Successfully in Bagging Turn" + str(index))
+	#index += 1
+sess = tf.keras.backend.get_session()
+model.fit(x=x_data,y=y_data,epochs=epochs%50,validation_split=valid_rate)
+builder = tf.saved_model.builder.SavedModelBuilder('./model/model_epoch'+str(epochs//50))
+builder.add_meta_graph_and_variables(sess,[tf.saved_model.tag_constants.SERVING])
+builder.save()
 exit(0)

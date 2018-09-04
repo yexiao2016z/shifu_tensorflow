@@ -307,11 +307,14 @@ public class DNNTrainerTF extends AbstractTrainer {
 				sb.add("\t\tif time.time()-start > 60000*30:");
 				sb.add("\t\t\traise Exception('Time out')");
 			sb.add("\tif is_chief:");
-				sb.add("\t\tbuilder = tf.saved_model.builder.SavedModelBuilder('./models')");
-				sb.add("\t\tsess.graph._unsafe_unfinalize()");
-				sb.add("\t\tbuilder.add_meta_graph_and_variables(sess._sess._sess._sess._sess,[tf.saved_model.tag_constants.SERVING])");
-				sb.add("\t\tsess.graph.finalize()");
-				sb.add("\t\tbuilder.save()");
+			///has problem
+				//sb.add("\t\tbuilder = tf.saved_model.builder.SavedModelBuilder('./models')");
+				//sb.add("\t\tsess.graph._unsafe_unfinalize()");
+				//sb.add("\t\tbuilder.add_meta_graph_and_variables(sess._sess._sess._sess._sess,[tf.saved_model.tag_constants.SERVING])");
+				//sb.add("\t\tsess.graph.finalize()");
+				//sb.add("\t\tbuilder.save()");
+				sb.add("\t\tprint(os.popen('hadoop fs -put ./tmp/train_logs/graph.pbtxt ' + hdfs_home).read())");
+			 	sb.add("\t\tprint('load to hdfs successfully')");
 		 sb.add("print('All worker done')");
 		// sb.add("if is_chief:");
 		// 	sb.add("\tbuilder = tf.saved_model.builder.SavedModelBuilder('./models')");
@@ -320,8 +323,7 @@ public class DNNTrainerTF extends AbstractTrainer {
 		// 	sb.add("\tgdef = text_format.Parse(txt, tf.GraphDef())");
 	//	 	sb.add("\ttf.train.write_graph(gdef, './tmp/train_logs', 'graph.pb', as_text=False)");
 
-		 	sb.add("\tprint(os.popen('hadoop fs -put ./models ' + hdfs_home).read())");
-		 	sb.add("\tprint('load to hdfs successfully')");
+		 	
 
 		//sb.add(String.format("\tif step > %d", (Integer)modelConfig.getParams().get("numTrainEpochs")));
     	return sb;
@@ -358,6 +360,7 @@ public class DNNTrainerTF extends AbstractTrainer {
     	sb.add("flags.DEFINE_integer('task_index', None, 'Index of task within the job')");
     	sb.add("flags.DEFINE_string('name_node', None, 'NameNode')");
     	sb.add("flags.DEFINE_integer('node_nums', None, 'NameNode')");
+    	sb.add("flags.DEFINE_integer('is_chief', None, 'NameNode')");
 
     	sb.add(String.format("flags.DEFINE_integer('train_steps', %d, 'Number of training steps to perform')"
     			, modelConfig.getNumTrainEpochs()));
@@ -410,11 +413,16 @@ public class DNNTrainerTF extends AbstractTrainer {
     	sb.add("print(ps_spec)");
     	sb.add("print(worker_spec)");
     	sb.add("if ip == ps_spec[0].split(':')[0]:");
-    	sb.add("\tFLAGS.job_name = 'ps'");
-    	sb.add("\tFLAGS.task_index = 0");
+    	sb.add("\tif is_chief == 0:");
+    	sb.add("\t\tFLAGS.job_name = 'ps'");
+    	sb.add("\t\tFLAGS.task_index = 0");
+    	sb.add("\telse:");
+    	sb.add("\t\tFLAGS.job_name == 'worker'");
+    	sb.add("\t\tFLAGS.task_index = 0");
     	sb.add("else:");
     	sb.add("\tFLAGS.job_name = 'worker'");
     	sb.add("\tFLAGS.task_index = list([i.split(':')[0] for i in worker_spec]).index(ip)");
+    	sb.add("\tif is_cheif == 1:exit(0)");
     	sb.add("count_file = len([1 for file in os.listdir('.') if file.endswith('.gz')])");
 
     	sb.add("count_ip = len(worker_spec)");

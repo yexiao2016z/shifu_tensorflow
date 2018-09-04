@@ -228,7 +228,7 @@ public class Client {
 				Thread.sleep(5000);
 			}
 			LOG.info("Task complete!");
-			fs.copyToLocalFile(new Path(fs.getHomeDirectory(),"shifu_tmp/models"), new Path("./models/graph.pb"));
+			fs.copyToLocalFile(new Path(fs.getHomeDirectory(),"shifu_tmp/graph.pbtxt"), new Path("./models/graph.pb"));
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {

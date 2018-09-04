@@ -332,11 +332,19 @@ public class ApplicationMaster{
 				command2.append("--library-path ./glibc_2.17/glibc2.17/lib/:$LD_LIBRARY_PATH:/usr/lib64 ");
 				command2.append("./python2.7/python2.7/bin/python ");
 				command2.append("./script.py ");
-				command2.append(String.format("--node_nums=%d ", numTotalContainers));		
+				command2.append(String.format("--node_nums=%d --is_chief=0 ", numTotalContainers));		
 				command2.append("1>>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout ");
-				command2.append("2>>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr;");
+				command2.append("2>>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr");
 				commands.add(command2.toString());
-				
+				//StringBuilder command3 = new StringBuilder();
+				//command3.append("./glibc_2.17/glibc2.17/lib/ld-linux-x86-64.so.2 ");
+				//command3.append("--library-path ./glibc_2.17/glibc2.17/lib/:$LD_LIBRARY_PATH:/usr/lib64 ");
+				//command3.append("./python2.7/python2.7/bin/python ");
+				//command3.append("./script.py ");
+				//command3.append(String.format("--node_nums=%d --is_chief=1 ", numTotalContainers));		
+				//command3.append("1>>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout2 ");
+				//command3.append("2>>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr2 &");
+				//commands.add(command3.toString());
 				//commands.add("ls -R ./tmp;");
 				//commands.add("if [ -f \"./tmp/train_logs/*.pbtxt\"]; then hadoop fs -put ./tmp/train_logs/*.pbtxt; " + fs.getHomeDirectory()+"/shifu_tmp/; fi");
 				ContainerLaunchContext ctx = ContainerLaunchContext.newInstance(
