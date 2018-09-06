@@ -112,12 +112,13 @@ data = data_raw.sample(frac=bagging_sample_rate,replace=bagging_replace)
 x_data = data[x].values
 y_data = data[y].values.flatten()
 sample_weight = data[[len(select_status)]].values.flatten()
-	
+import shutil
 #print("Start Model Fitting in Bagging Turn " + str(index))
 for i in range(epochs//50):
 	model.fit(x=x_data,y=y_data,epochs=50,validation_split=valid_rate)
 	#print("End Model Fitting in Bagging Turn " + str(index))
 	sess = tf.keras.backend.get_session()
+	if os.path.exists('./models/model_epoch'+str(i)):shutil.rmtree('./models/model_epoch'+str(i))
 	builder = tf.saved_model.builder.SavedModelBuilder('./model/model_epoch'+str(i))
 	builder.add_meta_graph_and_variables(sess,[tf.saved_model.tag_constants.SERVING])
 	#frozen_graph = freeze_session(tf.keras.backend.get_session(),
@@ -129,8 +130,10 @@ for i in range(epochs//50):
 	#os.popen('rm -r ./modelx')
 	#print("Save Model File Successfully in Bagging Turn" + str(index))
 	#index += 1
+if epochs%50 == 0:exit(0)
 sess = tf.keras.backend.get_session()
 model.fit(x=x_data,y=y_data,epochs=epochs%50,validation_split=valid_rate)
+if os.path.exists('./models/model_epoch'+str(epochs//50)):shutil.rmtree('./models/model_epoch'+str(epochs//50))
 builder = tf.saved_model.builder.SavedModelBuilder('./model/model_epoch'+str(epochs//50))
 builder.add_meta_graph_and_variables(sess,[tf.saved_model.tag_constants.SERVING])
 builder.save()

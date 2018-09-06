@@ -52,6 +52,7 @@ public class SynWorker {
 			System.out.println("Successfully write!");
 			long startTime = Time.now();
 			boolean flag = false;
+			System.out.println(String.format("Totally Need %d Awares!",totalContainerNums));
 			while(Time.now()-startTime < MAX_WAIT_TIME){
 				if(synFile(writeDir, totalContainerNums)) {
 					flag = true;
@@ -95,7 +96,7 @@ public class SynWorker {
 	        	}
 	        }
 	    	allIPAddress = allIPAddressBuilder.toString();
-	    	downLoadData(dataDirPath, index-1, task_index);
+	    	downLoadData(dataDirPath, index, task_index);
 		
 		
 			FileWriter writer=new FileWriter("ipz");
@@ -113,11 +114,11 @@ public class SynWorker {
         			dataFileStatus.add(status);
         	}
         	int dataFileNums = dataFileStatus.size();
-        	if(task_index > 0) {
+        	if(task_index >= 0) {
         		//System.err.println(dataFileNums);
         		for(int i = 0; i < dataFileNums / taskNums + 1; i++) {
-        			int fileIndex = i*taskNums+task_index-1;
-        			System.out.println("fileIndex:" + new Integer(fileIndex).toString());
+        			int fileIndex = i*taskNums+task_index;
+        			//System.out.println("fileIndex:" + new Integer(fileIndex).toString());
         			//System.out.println(fileIndex);
         			if(fileIndex < dataFileNums) {
         				String fileName = dataFileStatus.get(fileIndex).getPath().getName();
@@ -212,8 +213,8 @@ public class SynWorker {
             }else {
             	throw new Exception("No path exists...");
             }
-            System.out.println(count);
-            System.out.println(num);
+            System.out.println(String.format("Now %d Awares!",count));
+            //System.out.println(num);
             if(count == num) {
             	return true;
             }

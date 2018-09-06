@@ -307,13 +307,12 @@ public class DNNTrainerTF extends AbstractTrainer {
 				sb.add("\t\tif time.time()-start > 60000*30:");
 				sb.add("\t\t\traise Exception('Time out')");
 			sb.add("\tif is_chief:");
-			///has problem
-				//sb.add("\t\tbuilder = tf.saved_model.builder.SavedModelBuilder('./models')");
-				//sb.add("\t\tsess.graph._unsafe_unfinalize()");
-				//sb.add("\t\tbuilder.add_meta_graph_and_variables(sess._sess._sess._sess._sess,[tf.saved_model.tag_constants.SERVING])");
-				//sb.add("\t\tsess.graph.finalize()");
-				//sb.add("\t\tbuilder.save()");
-				sb.add("\t\tprint(os.popen('hadoop fs -put ./tmp/train_logs/graph.pbtxt ' + hdfs_home).read())");
+				sb.add("\t\tbuilder = tf.saved_model.builder.SavedModelBuilder('./models')");
+				sb.add("\t\tsess.graph._unsafe_unfinalize()");
+				sb.add("\t\tbuilder.add_meta_graph_and_variables(sess._sess._sess._sess._sess,[tf.saved_model.tag_constants.SERVING])");
+				sb.add("\t\tsess.graph.finalize()");
+				sb.add("\t\tbuilder.save()");
+				sb.add("\t\tprint(os.popen('hadoop fs -put ./tmp/models/ ' + hdfs_home).read())");
 			 	sb.add("\t\tprint('load to hdfs successfully')");
 		 sb.add("print('All worker done')");
 		// sb.add("if is_chief:");
@@ -408,21 +407,30 @@ public class DNNTrainerTF extends AbstractTrainer {
     	sb.add("with open('ipz', 'r') as f:");
     		sb.add("\tfile_names = f.readline().strip().split(',')");
     	sb.add("ps_spec = list([file_names[0]])");
-    	sb.add("worker_spec = file_names[1:]");
-    	//sb.add("worker_spec[0] = worker_spec[0].split(':')[0] + str(int(worker_spec[0].split(':')[1])+1)");
+    	sb.add("worker_spec = file_names");
+    	sb.add("worker_spec[0] = ':'.join([worker_spec[0].split(':')[0],str(int(worker_spec[0].split(':')[1])+1)])");
     	sb.add("print(ps_spec)");
     	sb.add("print(worker_spec)");
     	sb.add("if ip == ps_spec[0].split(':')[0]:");
-    	sb.add("\tif is_chief == 0:");
-    	sb.add("\t\tFLAGS.job_name = 'ps'");
-    	sb.add("\t\tFLAGS.task_index = 0");
-    	sb.add("\telse:");
-    	sb.add("\t\tFLAGS.job_name == 'worker'");
-    	sb.add("\t\tFLAGS.task_index = 0");
+    		sb.add("\twith open('./syn','a+') as f:");
+    			sb.add("\t\tf.write(str(os.getpid())+';')");
+    		sb.add("\twhile True:");
+    		    sb.add("\t\twith open('./syn','r') as f:");
+    		    	sb.add("\t\t\tk = f.readline().strip().split(';')");
+    		                                  //print(k)
+    		        sb.add("\t\t\tif len(k) == 3:break");
+    		 
+    		sb.add("\tif os.getpid() == int(open('./syn','r').readline().strip().split(';')[0]):");
+    		    sb.add("\t\tFLAGS.job_name = 'ps'");
+    		    sb.add("\t\tFLAGS.task_index = 0");
+
+    		sb.add("\telse:");
+    			sb.add("\t\tFLAGS.job_name == 'worker'");
+    			sb.add("\t\tFLAGS.task_index = 0");
     	sb.add("else:");
-    	sb.add("\tFLAGS.job_name = 'worker'");
-    	sb.add("\tFLAGS.task_index = list([i.split(':')[0] for i in worker_spec]).index(ip)");
-    	sb.add("\tif is_cheif == 1:exit(0)");
+    		sb.add("\tFLAGS.job_name = 'worker'");
+    		sb.add("\tFLAGS.task_index = list([i.split(':')[0] for i in worker_spec]).index(ip)");
+    		sb.add("\tif is_cheif == 1:exit(0)");
     	sb.add("count_file = len([1 for file in os.listdir('.') if file.endswith('.gz')])");
 
     	sb.add("count_ip = len(worker_spec)");
@@ -448,7 +456,22 @@ public class DNNTrainerTF extends AbstractTrainer {
     private List<String> addRunStep(){
     	List<String> sb = new ArrayList<String>();
     
-    	sb.add("if __name__ == '__main__':tf.app.run()");
+    	sb.add("if __name__ == '__main__':");
+    		sb.add("\timport re");
+    	    sb.add("\tip = re.findall('10\\.\\d+?\\.\\d+?\\.\\d+',os.popen('ifconfig').read().strip())[0]");
+    	    sb.add("\tfile_names = list()");
+    	    sb.add("\twith open('ipz', 'r') as f:");
+            	sb.add("\t\tfile_names = f.readline().strip().split(',')");
+    	    sb.add("\tps_spec = list([file_names[0]])");
+    	    sb.add("\tif ip == ps_spec[0].split(':')[0]:");
+    	    	sb.add("\t\timport multiprocessing as mul");
+    	        sb.add("\t\tp1 = mul.Process(target=tf.app.run)");
+    	        sb.add("\t\tp2 = mul.Process(target=tf.app.run)");
+    	        sb.add("\t\tp1.start()");
+    	        sb.add("\t\tp2.start()");
+    	    sb.add("\telse:");
+    	        sb.add("\t\ttf.app.run()");
+
     	return sb;
     }
     
