@@ -1,8 +1,0 @@
-.idea
-*.iml
-target
-.classpath
-.project
-.settings
-.DS_Store
-test-output
